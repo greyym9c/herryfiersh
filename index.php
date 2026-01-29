@@ -1,9 +1,14 @@
 <?php
 // Simple Router
-if (preg_match('/\.(?:js|css|png|jpg|jpeg|gif|ico)$/', $_SERVER['REQUEST_URI'])) {
-    http_response_code(404);
-    die("File not found");
+// Compat for PHP Built-in Server
+if (php_sapi_name() === 'cli-server') {
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    if (is_file(__DIR__ . $path)) {
+        return false;
+    }
 }
+
+// Simple Router
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
 // Valid pages whitelist to prevent LFI
