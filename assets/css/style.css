@@ -446,4 +446,17 @@ a {
         font-size: 0.7rem !important;
         padding: 0 0.4rem !important;
     }
-}
+
+    /* Mobile Clock Adjustment */
+    #bigRealtimeClock {
+        font-size: 3rem !important;
+    }
+
+    /* Time.is Style Clock */
+    .time-is-font {
+        font-family: 'Outfit', sans-serif;
+        background: linear-gradient(180deg, #fff 0%, #e2e8f0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }

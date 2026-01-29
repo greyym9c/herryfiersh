@@ -8,6 +8,17 @@
         </div>
     </div>
 
+    <!-- Aesthetic Big Clock -->
+    <div class="glass-panel text-center mb-4 py-4 position-relative overflow-hidden animate-fade-in" style="border: 1px solid rgba(255,255,255,0.08);">
+        <div class="position-relative" style="z-index: 2;">
+            <div class="text-secondary small text-uppercase mb-2 fw-bold" style="letter-spacing: 4px; font-size: 0.7rem;">Jakarta, Indonesia (WIB)</div>
+            <div id="bigRealtimeClock" class="fw-bold lh-1 time-is-font" style="font-size: 4.5rem; letter-spacing: -2px;">Loading...</div>
+            <div id="currentDate" class="text-secondary mt-2 fw-medium" style="font-size: 1.1rem;">-</div>
+        </div>
+        <!-- Ambient Glow -->
+        <div class="position-absolute top-50 start-50 translate-middle" style="width: 200px; height: 200px; background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%); z-index: 1; filter: blur(40px);"></div>
+    </div>
+
     <!-- Transaction History Table -->
     <!-- Dark theme container with Custom Navy Background -->
     <div class="glass-panel p-0 mb-4 overflow-hidden shadow-sm" style="background-color: #13192f; border-radius: 8px; border: 1px solid #1e293b;">
@@ -152,11 +163,27 @@
     // --- 1. Realtime Clock & Sync ---
     function updateClock() {
         const now = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-        let dateStr = now.toLocaleDateString('id-ID', options);
-        dateStr = dateStr.replace(/:/g, '.'); // Replace colons with dots
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        // Time
+        // Use manual formatting for precision like "18:45:02"
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        const timeStr = `${h}:${m}<span style="font-size:0.5em; opacity:0.7; vertical-align: top; margin-left:5px;">${s}</span>`;
         
-        document.getElementById('realtimeClock').innerText = dateStr + ' WIB';
+        // Date
+        const dateStr = now.toLocaleDateString('id-ID', options);
+        
+        // Top right small clock (optional, maybe remove or keep sync)
+        const smallClock = document.getElementById('realtimeClock');
+        if(smallClock) smallClock.innerHTML = `${h}:${m} WIB`;
+
+        // Big Aesthetic Clock
+        const bigClock = document.getElementById('bigRealtimeClock');
+        if(bigClock) bigClock.innerHTML = timeStr;
+        
+        const dateEl = document.getElementById('currentDate');
+        if(dateEl) dateEl.innerText = dateStr;
     }
     setInterval(updateClock, 1000);
     updateClock();
