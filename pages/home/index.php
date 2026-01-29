@@ -86,6 +86,21 @@
             </a>
         </div>
 
+        <!-- Saham Indonesia -->
+        <div class="col-md-6 col-lg-4">
+            <a href="/herryfiersh/?page=saham" class="text-decoration-none">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-chart-simple"></i>
+                    </div>
+                    <div class="feature-title">Saham Indonesia</div>
+                    <div class="feature-desc">
+                        Pantau pergerakan IHSG, Top Gainers/Losers, dan kalkulator pembelian lot saham secara mudah.
+                    </div>
+                </div>
+            </a>
+        </div>
+
         <!-- About -->
         <div class="col-md-6 col-lg-4">
             <a href="/herryfiersh/?page=about" class="text-decoration-none">

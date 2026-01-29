@@ -15,11 +15,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (page === 'barcode') initBarcodePage();
     if (page === 'gold') initGoldPage();
+    if (page === 'saham') initSahamPage();
     // 'struk' has its own inline script, so we skip it to avoid conflicts, 
     // or we can uncomment if we want to enforce script.js logic
     // if (page === 'struk') initReceiptPage(); 
     if (page === 'zakat') initZakatPage();
 });
+
+/* --- Page: Saham --- */
+function initSahamPage() {
+    console.log("Init Saham Page");
+    const priceInput = document.getElementById('stockPrice');
+    const lotInput = document.getElementById('stockLot');
+    const calcBtn = document.getElementById('calcStockBtn');
+    const totalDisplay = document.getElementById('stockTotal');
+    const detailDisplay = document.getElementById('stockDetails');
+
+    if (calcBtn) {
+        calcBtn.addEventListener('click', () => {
+            const price = parseFloat(cleanRupiah(priceInput.value)) || 0;
+            const lots = parseInt(lotInput.value) || 0;
+
+            // 1 Lot = 100 Lembar
+            const shares = lots * 100;
+            const total = price * shares;
+
+            totalDisplay.innerText = formatRupiah(total.toString(), 'Rp ');
+            detailDisplay.innerText = `${shares.toLocaleString('id-ID')} Lembar (@ Rp${price.toLocaleString('id-ID')})`;
+        });
+    }
+}
 
 /* --- Utilities --- */
 function formatRupiah(angka, prefix) {

@@ -22,6 +22,12 @@ $current_page = $page ?? 'home';
                     <a class="nav-link <?php echo $current_page == 'gold' ? 'active' : ''; ?>" href="?page=gold">Emas</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link <?php echo $current_page == 'treasury' ? 'active' : ''; ?>" href="/herryfiersh/?page=treasury">Treasury</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo $current_page == 'saham' ? 'active' : ''; ?>" href="/herryfiersh/?page=saham">Saham</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link <?php echo $current_page == 'struk' ? 'active' : ''; ?>" href="?page=struk">Struk</a>
                 </li>
                 <li class="nav-item">
