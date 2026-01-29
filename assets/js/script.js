@@ -8,6 +8,17 @@ document.addEventListener('DOMContentLoaded', () => {
             this.value = formatRupiah(this.value, 'Rp. ');
         });
     });
+
+    // Auto-Initialize Pages based on URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const page = urlParams.get('page');
+
+    if (page === 'barcode') initBarcodePage();
+    if (page === 'gold') initGoldPage();
+    // 'struk' has its own inline script, so we skip it to avoid conflicts, 
+    // or we can uncomment if we want to enforce script.js logic
+    // if (page === 'struk') initReceiptPage(); 
+    if (page === 'zakat') initZakatPage();
 });
 
 /* --- Utilities --- */
