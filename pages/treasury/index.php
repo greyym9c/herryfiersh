@@ -169,7 +169,7 @@
         const h = String(now.getHours()).padStart(2, '0');
         const m = String(now.getMinutes()).padStart(2, '0');
         const s = String(now.getSeconds()).padStart(2, '0');
-        const timeStr = `${h}:${m}<span style="font-size:0.5em; opacity:0.7; vertical-align: top; margin-left:5px;">${s}</span>`;
+        const timeStr = `${h}:${m}<span style="font-size:0.5em; color: #fff; -webkit-text-fill-color: #fff; vertical-align: top; margin-left:5px;">${s}</span>`;
         
         // Date
         const dateStr = now.toLocaleDateString('id-ID', options);
