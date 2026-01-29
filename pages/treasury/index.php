@@ -62,7 +62,7 @@
                     <li class="border-top border-white-10 my-1"></li>
                      <li>
                         <i class="fa-brands fa-telegram me-2 text-info"></i>
-                        <a href="#" class="text-info text-decoration-none">Join Grup Diskusi</a>
+                        <a href="https://chat.whatsapp.com/F2dVVShi8QIA6Vm9TaSJli" class="text-info text-decoration-none" target="_blank">Join Grup Diskusi</a>
                     </li>
                 </ul>
             </div>
