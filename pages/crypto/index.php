@@ -18,7 +18,7 @@
                     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
                     {
                     "autosize": true,
-                    "symbol": "BINANCE:BTCBIDR",
+                    "symbol": "BINANCE:BTCUSDT",
                     "interval": "D",
                     "timezone": "Asia/Jakarta",
                     "theme": "dark",
