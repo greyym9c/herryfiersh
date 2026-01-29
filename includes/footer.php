@@ -13,6 +13,6 @@
 
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.5/JsBarcode.all.min.js"></script>
-<script src="/herryfiersh/assets/js/script.js"></script>
+<script src="assets/js/script.js"></script>
 </body>
 </html>
