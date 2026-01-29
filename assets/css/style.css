@@ -230,6 +230,14 @@ a {
         padding: 1.25rem !important;
     }
 
+    .glass-panel.p-0 {
+        padding: 0 !important;
+    }
+
+    .glass-panel.p-1 {
+        padding: 0.25rem !important;
+    }
+
     .feature-card {
         padding: 1.25rem;
     }
