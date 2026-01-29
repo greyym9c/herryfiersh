@@ -95,7 +95,7 @@
                     </div>
                     <div class="feature-title">About Me</div>
                     <div class="feature-desc">
-                        Mengenal visi CUAN MANIA dalam membantu finansial dan produktivitas Anda sehari-hari.
+                        Mengenal visi HERRYFIERSH TOOLS dalam membantu finansial dan produktivitas Anda sehari-hari.
                     </div>
                 </div>
             </a>

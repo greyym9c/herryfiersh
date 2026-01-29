@@ -11,7 +11,7 @@
             <i class="fa-solid fa-code"></i>
         </div>
         
-        <h2 style="margin-bottom: 1rem;">CUAN MANIA</h2>
+        <h2 style="margin-bottom: 1rem;">HERRYFIERSH TOOLS</h2>
         <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 2rem;">
             Platform tools finansial yang didedikasikan untuk membantu UMKM dan individu dalam mengelola keuangan mereka dengan lebih cerdas. 
             Dikembangkan dengan teknologi web modern untuk memberikan pengalaman pengguna yang cepat, responsif, dan estetik.
