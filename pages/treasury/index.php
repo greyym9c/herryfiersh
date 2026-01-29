@@ -42,7 +42,7 @@
     <!-- Chart & Info Section -->
     <div class="row g-4">
         <!-- Left Sidebar: Info & USD List -->
-        <div class="col-lg-4">
+        <div class="col-lg-4 order-2 order-lg-1">
             <!-- Info Card -->
             <div class="glass-panel p-4 mb-4">
                 <h5 class="text-white fw-bold mb-3">Sekilas Ingfo Treasury</h5>
@@ -91,7 +91,7 @@
         </div>
 
         <!-- Right Main: Gold Chart & Calendar -->
-        <div class="col-lg-8">
+        <div class="col-lg-8 order-1 order-lg-2">
             <!-- TradingView Chart -->
             <div class="glass-panel p-1 mb-4" style="height: 500px;">
                 <!-- TradingView Widget BEGIN -->
