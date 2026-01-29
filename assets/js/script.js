@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (page === 'barcode') initBarcodePage();
     if (page === 'gold') initGoldPage();
     if (page === 'saham') initSahamPage();
+    if (page === 'crypto') initCryptoPage();
     // 'struk' has its own inline script, so we skip it to avoid conflicts, 
     // or we can uncomment if we want to enforce script.js logic
     // if (page === 'struk') initReceiptPage(); 
@@ -42,6 +43,28 @@ function initSahamPage() {
 
             totalDisplay.innerText = formatRupiah(total.toString(), 'Rp ');
             detailDisplay.innerText = `${shares.toLocaleString('id-ID')} Lembar (@ Rp${price.toLocaleString('id-ID')})`;
+        });
+    }
+}
+
+/* --- Page: Crypto --- */
+function initCryptoPage() {
+    console.log("Init Crypto Page");
+    const priceInput = document.getElementById('cryptoPrice');
+    const amountInput = document.getElementById('cryptoAmount');
+    const calcBtn = document.getElementById('calcCryptoBtn');
+    const totalDisplay = document.getElementById('cryptoTotal');
+    const detailDisplay = document.getElementById('cryptoDetails');
+
+    if (calcBtn) {
+        calcBtn.addEventListener('click', () => {
+            const price = parseFloat(cleanRupiah(priceInput.value)) || 0;
+            const amount = parseFloat(amountInput.value) || 0;
+
+            const total = price * amount;
+
+            totalDisplay.innerText = formatRupiah(total.toString(), 'Rp ');
+            detailDisplay.innerText = `${amount} Coins (@ Rp${price.toLocaleString('id-ID')})`;
         });
     }
 }

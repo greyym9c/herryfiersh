@@ -101,6 +101,21 @@
             </a>
         </div>
 
+        <!-- Crypto -->
+        <div class="col-md-6 col-lg-4">
+            <a href="/herryfiersh/?page=crypto" class="text-decoration-none">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fa-brands fa-bitcoin"></i>
+                    </div>
+                    <div class="feature-title">Pasar Crypto</div>
+                    <div class="feature-desc">
+                        Pantau harga Bitcoin & Altcoins realtime, Top Gainers, dan kalkulator aset crypto Anda.
+                    </div>
+                </div>
+            </a>
+        </div>
+
         <!-- About -->
         <div class="col-md-6 col-lg-4">
             <a href="/herryfiersh/?page=about" class="text-decoration-none">
