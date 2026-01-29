@@ -13,6 +13,6 @@
 
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.5/JsBarcode.all.min.js"></script>
-<script src="assets/js/script.js?v=<?php echo time(); ?>"></script>
+<script src="<?php echo $base_url; ?>assets/js/script.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>
