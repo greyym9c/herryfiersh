@@ -16,7 +16,7 @@
             <small class="text-secondary" style="font-size: 0.75rem;">Data from diiniindulu.up.railway.app</small>
         </div>
         <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-            <table class="table table-dark table-hover mb-0 align-middle text-center" style="font-family: 'Inter', sans-serif; background-color: #13192f; --bs-table-bg: #13192f;">
+            <table class="table table-dark table-hover mb-0 align-middle text-center mobile-card-table" style="font-family: 'Inter', sans-serif; background-color: #13192f; --bs-table-bg: #13192f;">
                 <thead class="sticky-top" style="background-color: #0f1525;">
                     <tr class="text-secondary fw-bold small text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
                         <th class="py-4 ps-3" style="width: 15%; background-color: #0f1525;">WAKTU</th>
