@@ -22,7 +22,12 @@ body {
 }
 
 /* Typography Overrides */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-weight: 700;
     letter-spacing: -0.5px;
 }
@@ -62,7 +67,8 @@ a {
     padding: 0.5rem 1rem !important;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
     color: var(--text-primary) !important;
 }
 
@@ -142,8 +148,15 @@ a {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Buttons */
@@ -165,8 +178,86 @@ a {
 
 /* Print Overrides */
 @media print {
-    body * { visibility: hidden; }
-    #receiptPreview, #receiptPreview * { visibility: visible; }
-    #receiptPreview { position: absolute; left: 0; top: 0; width: 100%; margin: 0; }
-    body { background: white !important; color: black !important; }
+    body * {
+        visibility: hidden;
+    }
+
+    #receiptPreview,
+    #receiptPreview * {
+        visibility: visible;
+    }
+
+    #receiptPreview {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+
+    /* Typography Scaling */
+    h1.display-4 {
+        font-size: 2.25rem;
+    }
+
+    h1 {
+        font-size: 1.75rem !important;
+    }
+
+    h2 {
+        font-size: 1.5rem !important;
+    }
+
+    h3 {
+        font-size: 1.25rem !important;
+    }
+
+    p.lead {
+        font-size: 1rem;
+    }
+
+    /* Spacing & Layout */
+    .glass-panel {
+        padding: 1.25rem !important;
+    }
+
+    .feature-card {
+        padding: 1.25rem;
+    }
+
+    .container {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+
+    /* Navbar */
+    .navbar-brand span {
+        font-size: 1.1rem;
+    }
+
+    .navbar-collapse {
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 1rem;
+        border-radius: 12px;
+        margin-top: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Receipt Page Adjustment */
+    #receiptPreview {
+        width: 100% !important;
+        max-width: 380px !important;
+        margin: 0 auto !important;
+        box-sizing: border-box;
+    }
 }
