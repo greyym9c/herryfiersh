@@ -1,5 +1,9 @@
 <?php
 // Simple Router
+if (preg_match('/\.(?:js|css|png|jpg|jpeg|gif|ico)$/', $_SERVER['REQUEST_URI'])) {
+    http_response_code(404);
+    die("File not found");
+}
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
 // Valid pages whitelist to prevent LFI
