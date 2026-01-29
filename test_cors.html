@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>CORS Test</h1>
+    <div id="output">Testing...</div>
+    <script>
+        fetch('https://api.treasury.id/api/v1/antigrvty/gold/rate', {
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('output').innerText = 'SUCCESS: ' + JSON.stringify(data);
+        })
+        .catch(err => {
+            document.getElementById('output').innerText = 'FAILED: ' + err.message;
+        });
+    </script>
+</body>
+</html>

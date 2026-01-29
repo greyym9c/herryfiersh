@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pusher Debugger</title>
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+</head>
+
+<body>
+    <h2>Pusher Debug Log</h2>
+    <div id="status">Connecting...</div>
+    <pre id="log" style="background:#f0f0f0; padding:10px; border:1px solid #ccc; height:400px; overflow:auto;"></pre>
+
+    <script>
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('52e99bd2c3c42e577e13', {
+            cluster: 'ap1',
+            forceTLS: true
+        });
+
+        var channel = pusher.subscribe('gold-rate');
+
+        pusher.connection.bind('state_change', function (states) {
+            document.getElementById('status').innerText = "State: " + states.current;
+        });
+
+        channel.bind_all(function (eventName, data) {
+            var log = document.getElementById('log');
+            var entry = "Event: " + eventName + "\nData: " + JSON.stringify(data, null, 2) + "\n\n";
+            log.innerText = entry + log.innerText;
+            console.log("CAPTURED_EVENT", eventName, data);
+        });
+    </script>
+</body>
+
+</html>
