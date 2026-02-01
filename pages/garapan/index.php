@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalBadge = document.getElementById('totalGarapan');
     const historyBadge = document.getElementById('totalHistory');
     const emptyHistory = document.getElementById('emptyHistory');
-    const apiPath = 'api/garapan_api.php';
+    const apiPath = '<?php echo $base_url; ?>api/garapan_api.php';
 
     function updateClock() {
         const now = new Date();
@@ -86,10 +86,15 @@ document.addEventListener('DOMContentLoaded', function() {
     updateClock();
 
     function loadData() {
+        console.log("Fetching from:", apiPath);
         fetch(apiPath)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('Network response was not ok');
+                return res.json();
+            })
             .then(data => {
-                data.sort((a, b) => a.jam.localeCompare(b.jam));
+                console.log("Data received:", data);
+                data.sort((a, b) => (a.jam || '').localeCompare(b.jam || ''));
                 
                 const today = new Date().toISOString().split('T')[0];
                 
@@ -110,6 +115,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 totalBadge.textContent = active.length;
                 historyBadge.textContent = `${finished.length} Item`;
+            })
+            .catch(err => {
+                console.error("Error loading garapan data:", err);
+                tableBody.innerHTML = '<tr><td colspan="2" class="text-center py-5 text-danger">Gagal memuat data. Periksa koneksi atau file JSON.</td></tr>';
             });
     }
 
