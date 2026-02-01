@@ -142,10 +142,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <span class="fw-bold fs-5 text-white">${item.nama_garapan}</span>
                                 <span class="badge bg-primary-gradient px-2 py-1 small" style="font-size: 0.7rem;">${item.periode}</span>
                                 <span class="text-info small fw-bold"><i class="fa-regular fa-clock me-1"></i>${item.jam}</span>
-                                ${item.cashback ? `<span class="badge bg-success text-white px-2 py-1 small pulsate-subtle" style="font-size: 0.7rem; background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-hand-holding-dollar me-1"></i>CB: Rp ${item.cashback}</span>` : ''}
                             </div>
-                            <div class="mb-1">
-                                <span class="text-white small"><i class="fa-solid fa-calendar-day me-2 text-primary"></i>${formatDate(item.tgl_mulai)} s/d ${formatDate(item.tgl_selesai)}</span>
+                            <div class="mb-1 d-flex flex-column gap-1">
+                                ${item.cashback ? `<div class=""><span class="badge bg-success text-white px-2 py-1 small pulsate-subtle" style="font-size: 0.7rem; background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-hand-holding-dollar me-1"></i>CB: Rp ${item.cashback}</span></div>` : ''}
+                                <div class="text-white small"><i class="fa-solid fa-calendar-day me-2 text-primary"></i>${formatDate(item.tgl_mulai)} s/d ${formatDate(item.tgl_selesai)}</div>
                             </div>
                             <div class="text-white small opacity-90" style="line-height: 1.4;">${item.keterangan || 'Tidak ada keterangan'}</div>
                         </div>
@@ -181,7 +181,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             <i class="fa-solid fa-circle-check text-success"></i>
                             <div>
                                 <div class="fw-bold text-white small">${item.nama_garapan}</div>
-                                <div class="text-white opacity-75" style="font-size: 0.75rem;">Selesai: ${formatDate(item.tgl_selesai)} ${item.cashback ? `| CB: Rp ${item.cashback}` : ''}</div>
+                                ${item.cashback ? `<div class="mb-1"><span class="badge bg-success text-white px-2 py-1 small" style="font-size: 0.65rem; background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-hand-holding-dollar me-1"></i>CB: Rp ${item.cashback}</span></div>` : ''}
+                                <div class="text-white opacity-75" style="font-size: 0.75rem;">Selesai: ${formatDate(item.tgl_selesai)}</div>
                             </div>
                         </div>
                         <div class="d-flex gap-2">
