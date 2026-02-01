@@ -242,6 +242,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Sort Active data by countdown
                 active = sortActiveData(active);
 
+                // Auto-finish Sekali Jalan items on load
+                active.forEach(item => {
+                    if (item.periode === 'Sekali Jalan' && item.diff < 0) {
+                        finishItem(item.id);
+                    }
+                });
+
                 // Finished: Manually finished OR deadline passed
                 const finished = data.filter(i => 
                     i.status === 'finished' || 
@@ -273,17 +280,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const [h, m] = item.jam.split(':').map(Number);
             const targetDate = new Date(currentYear, currentMonth, currentDay, h, m, 0);
             let diff = targetDate - now;
+            
+            // Harian Logic: If passed, set for tomorrow
+            if (item.periode === 'Harian' && diff < 0) {
+                diff += 86400000;
+            }
+
             return { ...item, diff };
         }).sort((a, b) => {
-            // Priority 1 (Urgent) always on top? Or strictly by countdown?
-            // The user said "dari hitungan mundurnya lebih cepat", so countdown priority.
-            
-            // If both are upcoming, nearest first
+            // Sort by nearest countdown (smallest positive diff first)
+            // If diff < 0 (passed Sekali Jalan), it goes to the bottom
             if (a.diff > 0 && b.diff > 0) return a.diff - b.diff;
-            // If both passed, nearest pass (longest passed) last? 
-            // "pindah ke bawah" -> passed items go to bottom.
-            if (a.diff <= 0 && b.diff <= 0) return b.diff - a.diff; // Most recently passed at top of bottom section? Or just a.diff - b.diff?
-            // Let's do: upcoming first, passed last.
+            if (a.diff <= 0 && b.diff <= 0) return a.diff - b.diff; 
             if (a.diff > 0 && b.diff <= 0) return -1;
             if (a.diff <= 0 && b.diff > 0) return 1;
             return 0;
@@ -300,6 +308,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Check if we need to re-sort
         const sortedActive = sortActiveData(activeData);
+        
+        // Check for Sekali Jalan auto-finish
+        sortedActive.forEach(item => {
+            if (item.periode === 'Sekali Jalan' && item.diff < 0) {
+                // Auto finish if passed
+                console.log(`Auto finishing Sekali Jalan task: ${item.nama_garapan}`);
+                finishItem(item.id);
+            }
+        });
+
         const currentOrder = sortedActive.map(i => i.id).join(',');
         
         if (currentOrder !== lastOrder) {
@@ -317,26 +335,37 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetDate = new Date(currentYear, currentMonth, currentDay, h, m, 0);
             
             let diff = targetDate - now;
-            let statusText = '-';
+
+            // Check if this is a Harian task that has passed today
+            // We need to know the item's periode
+            const rowId = span.closest('tr').querySelector('.btn-finish')?.getAttribute('onclick').match(/'([^']+)'/)[1];
+            const item = activeData.find(i => i.id === rowId);
+
+            if (item && item.periode === 'Harian' && diff < 0) {
+                diff += 86400000; // Point to tomorrow
+            }
+
             let statusClass = 'text-warning';
 
             if (diff < 0) {
-                // Already passed for today
-                statusText = 'PASSED';
+                // This will only happen for "Sekali Jalan" because Harian diff was added 24h above
                 statusClass = 'text-secondary opacity-50';
                 const absDiff = Math.abs(diff);
                 const hh = Math.floor(absDiff / 1000 / 60 / 60);
                 const mm = Math.floor((absDiff / 1000 / 60) % 60);
                 const ss = Math.floor((absDiff / 1000) % 60);
                 span.innerHTML = `<i class="fa-solid fa-clock-rotate-left me-1"></i> Selesai ${hh}j ${mm}m lalu`;
-                span.className = `countdown-timer badge bg-dark border border-secondary ${statusClass} small user-select-none`;
             } else {
                 const hh = Math.floor(diff / 1000 / 60 / 60);
                 const mm = Math.floor((diff / 1000 / 60) % 60);
                 const ss = Math.floor((diff / 1000) % 60);
-                span.innerHTML = `<i class="fa-solid fa-stopwatch me-1"></i> -${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
-                span.className = `countdown-timer badge bg-dark border border-secondary ${statusClass} small user-select-none`;
+                
+                // If it's for tomorrow, maybe show a small indicator or just the timer
+                const tomorrowPrefix = (item && item.periode === 'Harian' && (targetDate - now) < 0) ? '<small class="me-1">Besok</small>' : '';
+                
+                span.innerHTML = `<i class="fa-solid fa-stopwatch me-1"></i> ${tomorrowPrefix}-${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
             }
+            span.className = `countdown-timer badge bg-dark border border-secondary ${statusClass} small user-select-none`;
         });
     }
     // Update timers every second

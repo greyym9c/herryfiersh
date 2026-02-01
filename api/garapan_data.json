@@ -32,7 +32,7 @@
         "keterangan": "CC 15JT Diskon 150K",
         "tgl_mulai": "2026-02-02",
         "tgl_selesai": "2026-02-02",
-        "status": "active",
+        "status": "finished",
         "prioritas": "1"
     },
     {
@@ -41,7 +41,7 @@
         "jam": "00:00",
         "periode": "Harian",
         "cashback": "8.000",
-        "keterangan": "Pantau Restokan Qpon Indogold 100k Indogold 50k Indomaret 25k Voucher diskon 8k dari rolet harian Bot jika server on : https://monitorqpon.broriz-dev.workers.dev/",
+        "keterangan": "Pantau Restokan Qpon Indogold 100k Indogold 50k Indomaret 25k Voucher diskon 8k dari rolet harian Bot jika server on : https:\/\/monitorqpon.broriz-dev.workers.dev\/",
         "tgl_mulai": "2026-02-01",
         "tgl_selesai": "2026-02-28",
         "status": "active",
