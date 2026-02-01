@@ -1,13 +1,17 @@
 <?php
 header("Content-Type: application/json");
 
-// 1. Load Files
-$garapanFile = 'garapan_data.json';
-$configFile = 'bot_config.json';
-$logFile = 'bot_log.json';
+// 1. Load Files (Use Absolute Paths)
+$garapanFile = __DIR__ . '/garapan_data.json';
+$configFile = __DIR__ . '/bot_config.json';
+$logFile = __DIR__ . '/bot_log.json';
 
-if (!file_exists($garapanFile) || !file_exists($configFile)) {
-    echo json_encode(['status' => 'error', 'message' => 'Data or Config not found']);
+if (!file_exists($garapanFile)) {
+    echo json_encode(['status' => 'error', 'message' => 'garapan_data.json not found']);
+    exit;
+}
+if (!file_exists($configFile)) {
+    echo json_encode(['status' => 'error', 'message' => 'bot_config.json not found. Please click SAVE in the web settings first.']);
     exit;
 }
 

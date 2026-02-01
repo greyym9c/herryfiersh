@@ -3,7 +3,7 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 
-$configFile = 'bot_config.json';
+$configFile = __DIR__ . '/bot_config.json';
 $input = json_decode(file_get_contents('php://input'), true);
 
 if (!$input) {
