@@ -330,7 +330,14 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <span class="fw-bold fs-5 text-white">${item.nama_garapan}</span>
                                 ${priorityBadge}
                                 <span class="badge bg-primary-gradient px-2 py-1 small" style="font-size: 0.7rem;">${item.periode}</span>
-                                <span class="text-info fw-bolder mx-2" style="font-size: 1.5rem; text-shadow: 0 0 10px rgba(14, 165, 233, 0.5);"><i class="fa-regular fa-clock me-1"></i>${item.jam}</span>
+                                
+                                <div class="d-inline-flex align-items-center justify-content-center px-3 py-1 mx-2 rounded-pill" 
+                                     style="background: rgba(14, 165, 233, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);">
+                                    <i class="fa-regular fa-clock me-2 text-info"></i>
+                                    <span class="fw-bold text-white" style="font-size: 1.1rem; letter-spacing: 1px; font-family: 'Inter', monospace;">${item.jam}</span>
+                                    <span class="small text-info ms-1" style="font-size: 0.7rem; opacity: 0.8;">WIB</span>
+                                </div>
+
                                 <span class="countdown-timer badge bg-dark border border-secondary text-warning small user-select-none" data-time="${item.jam}">Loading...</span>
                             </div>
                             <div class="mb-1 d-flex flex-column gap-1">
