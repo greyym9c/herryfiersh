@@ -1,5 +1,8 @@
 <?php
 header("Content-Type: application/json");
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 
 // 1. Load Files (Use Absolute Paths)
 $garapanFile = __DIR__ . '/garapan_data.json';
@@ -11,9 +14,12 @@ if (!file_exists($garapanFile)) {
     exit;
 }
 if (!file_exists($configFile)) {
-    echo json_encode(['status' => 'error', 'message' => 'bot_config.json not found. Please click SAVE in the web settings first.']);
+    echo json_encode(['status' => 'error', 'message' => 'bot_config.json not found.']);
     exit;
 }
+
+// Clear PHP's stat cache to ensure we get fresh file info
+clearstatcache();
 
 $garapanData = json_decode(file_get_contents($garapanFile), true);
 $botConfig = json_decode(file_get_contents($configFile), true);
