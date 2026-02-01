@@ -234,11 +234,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 const today = new Date().toISOString().split('T')[0];
                 
                 // Active: Not manually finished AND (No tgl_selesai OR tgl_selesai hasn't passed)
-                const active = data.filter(i => 
+                let active = data.filter(i => 
                     i.status !== 'finished' && 
                     (!i.tgl_selesai || i.tgl_selesai >= today)
                 );
                 
+                // Sort Active data by countdown
+                active = sortActiveData(active);
+
                 // Finished: Manually finished OR deadline passed
                 const finished = data.filter(i => 
                     i.status === 'finished' || 
@@ -248,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 renderActive(active);
                 renderHistory(finished);
                 
-                activeData = active; // Store for reminders
+                activeData = active; // Store for reminders and sorting
                 totalBadge.textContent = active.length;
                 historyBadge.textContent = `${finished.length} Item`;
             })
@@ -259,35 +262,81 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
 
+    function sortActiveData(data) {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+        const currentDay = now.getDate();
+
+        return data.map(item => {
+            if (!item.jam) return { ...item, diff: Infinity };
+            const [h, m] = item.jam.split(':').map(Number);
+            const targetDate = new Date(currentYear, currentMonth, currentDay, h, m, 0);
+            let diff = targetDate - now;
+            return { ...item, diff };
+        }).sort((a, b) => {
+            // Priority 1 (Urgent) always on top? Or strictly by countdown?
+            // The user said "dari hitungan mundurnya lebih cepat", so countdown priority.
+            
+            // If both are upcoming, nearest first
+            if (a.diff > 0 && b.diff > 0) return a.diff - b.diff;
+            // If both passed, nearest pass (longest passed) last? 
+            // "pindah ke bawah" -> passed items go to bottom.
+            if (a.diff <= 0 && b.diff <= 0) return b.diff - a.diff; // Most recently passed at top of bottom section? Or just a.diff - b.diff?
+            // Let's do: upcoming first, passed last.
+            if (a.diff > 0 && b.diff <= 0) return -1;
+            if (a.diff <= 0 && b.diff > 0) return 1;
+            return 0;
+        });
+    }
+
     // --- Countdown Timer Logic ---
+    let lastOrder = '';
     function updateRowTimers() {
         const now = new Date();
         const currentYear = now.getFullYear();
         const currentMonth = now.getMonth();
         const currentDay = now.getDate();
 
+        // Check if we need to re-sort
+        const sortedActive = sortActiveData(activeData);
+        const currentOrder = sortedActive.map(i => i.id).join(',');
+        
+        if (currentOrder !== lastOrder) {
+            lastOrder = currentOrder;
+            renderActive(activeData = sortedActive);
+        }
+
         // Iterate over all active items rows to find countdown spans
-        const rows = document.querySelectorAll('.countdown-timer');
-        rows.forEach(span => {
+        const spans = document.querySelectorAll('.countdown-timer');
+        spans.forEach(span => {
             const timeTarget = span.getAttribute('data-time');
             if (!timeTarget) return;
 
             const [h, m] = timeTarget.split(':').map(Number);
             const targetDate = new Date(currentYear, currentMonth, currentDay, h, m, 0);
             
-            // If target time has passed today, assume it is for tomorrow (approx next occurrence)
             let diff = targetDate - now;
-            
-            if (diff < 0) {
-                 // Add 24 hours (86400000 ms)
-                 diff += 86400000;
-            }
+            let statusText = '-';
+            let statusClass = 'text-warning';
 
-            const hh = Math.floor(diff / 1000 / 60 / 60);
-            const mm = Math.floor((diff / 1000 / 60) % 60);
-            const ss = Math.floor((diff / 1000) % 60);
-            
-            span.innerHTML = `<i class="fa-solid fa-stopwatch me-1"></i> -${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+            if (diff < 0) {
+                // Already passed for today
+                statusText = 'PASSED';
+                statusClass = 'text-secondary opacity-50';
+                const absDiff = Math.abs(diff);
+                const hh = Math.floor(absDiff / 1000 / 60 / 60);
+                const mm = Math.floor((absDiff / 1000 / 60) % 60);
+                const ss = Math.floor((absDiff / 1000) % 60);
+                span.innerHTML = `<i class="fa-solid fa-clock-rotate-left me-1"></i> Selesai ${hh}j ${mm}m lalu`;
+                span.className = `countdown-timer badge bg-dark border border-secondary ${statusClass} small user-select-none`;
+            } else {
+                const hh = Math.floor(diff / 1000 / 60 / 60);
+                const mm = Math.floor((diff / 1000 / 60) % 60);
+                const ss = Math.floor((diff / 1000) % 60);
+                span.innerHTML = `<i class="fa-solid fa-stopwatch me-1"></i> -${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+                span.className = `countdown-timer badge bg-dark border border-secondary ${statusClass} small user-select-none`;
+            }
         });
     }
     // Update timers every second
