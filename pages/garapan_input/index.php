@@ -75,7 +75,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('garapanForm');
     const garapanId = document.getElementById('garapanId').value;
-    const apiPath = 'api/garapan_api.php';
+    const apiPath = '<?php echo $base_url; ?>api/garapan_api.php';
 
     // --- Realtime Clock ---
     function updateClock() {
@@ -91,7 +91,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // If edit mode
     if (garapanId) {
         fetch(apiPath)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('Gagal mengambil data untuk di-edit');
+                return res.json();
+            })
             .then(data => {
                 const item = data.find(i => i.id == garapanId);
                 if (item) {
@@ -103,7 +106,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('keterangan').value = item.keterangan;
                     document.getElementById('formTitle').textContent = 'Edit Data Garapan';
                 }
-            });
+            })
+            .catch(err => console.error("Error loading edit data:", err));
     }
 
     form.addEventListener('submit', function(e) {
@@ -124,11 +128,20 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             body: JSON.stringify(payload)
         })
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error('Gagal menyimpan data ke server');
+            return res.json();
+        })
         .then(res => {
             if (res.success) {
                 window.location.href = '?page=garapan';
+            } else {
+                alert('Gagal menyimpan: ' + (res.error || 'Terjadi kesalahan tidak diketahui'));
             }
+        })
+        .catch(err => {
+            console.error("Error saving garapan:", err);
+            alert('Kesalahan jaringan atau server. Pastikan folder API memiliki izin tulis.');
         });
     });
 });

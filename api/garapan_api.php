@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-$file_path = 'garapan_data.json';
+$file_path = __DIR__ . '/garapan_data.json';
 
 // Function to read data
 function read_data($path) {
