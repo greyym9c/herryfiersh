@@ -269,9 +269,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 @media (max-width: 768px) {
     .btn-action {
-        width: 32px;
-        height: 32px;
-        font-size: 0.8rem;
+        width: 34px;
+        height: 34px;
+        font-size: 0.85rem;
+    }
+    #garapanTableBody tr, #historyTableBody tr {
+        display: block;
+        background: rgba(255, 255, 255, 0.03);
+        margin-bottom: 1rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+    #garapanTableBody td, #historyTableBody td {
+        display: block;
+        padding: 1.25rem !important;
     }
 }
 </style>
