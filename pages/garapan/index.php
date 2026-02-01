@@ -270,4 +270,26 @@ document.addEventListener('DOMContentLoaded', function() {
     color: #ef4444;
     background: rgba(239, 68, 68, 0.1);
 }
+
+@media (max-width: 768px) {
+    #garapanTableBody tr, #historyTableBody tr {
+        display: block;
+        padding: 0.5rem 0;
+    }
+    #garapanTableBody td, #historyTableBody td {
+        display: block;
+        width: 100% !important;
+        padding-left: 1.25rem !important;
+        padding-right: 1.25rem !important;
+        text-align: left !important;
+        border: none !important;
+    }
+    #garapanTableBody .text-end, #historyTableBody .text-end {
+        padding-top: 0 !important;
+        padding-bottom: 1rem !important;
+    }
+    #garapanTableBody .justify-content-end, #historyTableBody .justify-content-end {
+        justify-content: flex-start !important;
+    }
+}
 </style>
