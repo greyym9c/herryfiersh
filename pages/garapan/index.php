@@ -125,15 +125,40 @@ document.addEventListener('DOMContentLoaded', function() {
     const emptyHistory = document.getElementById('emptyHistory');
     const apiPath = '<?php echo $base_url; ?>api/garapan_api.php';
     const configPath = '<?php echo $base_url; ?>api/save_bot_config.php';
+    const getConfigPath = '<?php echo $base_url; ?>api/get_bot_config.php';
     
     let activeData = [];
     const defaultTeleToken = '8114128194:AAH5S2k2kTtigRnjA9zD2YbwN3vA8W3_pjU';
     
     let botConfig = {
-        teleToken: localStorage.getItem('teleBotToken') || defaultTeleToken,
-        teleChatId: localStorage.getItem('teleChatId') || '',
-        teleEnabled: localStorage.getItem('teleBotEnabled') === 'true'
+        teleToken: defaultTeleToken,
+        teleChatId: '',
+        teleEnabled: false
     };
+
+    // Load Config from Server
+    function loadBotConfig() {
+        console.log("Fetching bot config...");
+        fetch(getConfigPath)
+            .then(res => res.json())
+            .then(data => {
+                console.log("Bot Config loaded:", data);
+                if (data.teleToken) botConfig.teleToken = data.teleToken;
+                if (data.teleChatId) botConfig.teleChatId = data.teleChatId;
+                botConfig.teleEnabled = data.teleEnabled === true || data.teleEnabled === "true";
+
+                // Update UI if modal is open (or pre-fill for later)
+                const tokenInput = document.getElementById('teleBotToken');
+                const chatInput = document.getElementById('teleChatId');
+                const enabledInput = document.getElementById('teleBotEnabled');
+
+                if (tokenInput) tokenInput.value = botConfig.teleToken;
+                if (chatInput) chatInput.value = botConfig.teleChatId;
+                if (enabledInput) enabledInput.checked = botConfig.teleEnabled;
+            })
+            .catch(err => console.error("Error loading bot config:", err));
+    }
+    loadBotConfig();
 
     function updateClock() {
         const now = new Date();
@@ -373,11 +398,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Modal Handling
     const saveBtn = document.getElementById('saveBotConfig');
-    
-    // Set initial values
-    document.getElementById('teleBotToken').value = botConfig.teleToken;
-    document.getElementById('teleChatId').value = botConfig.teleChatId;
-    document.getElementById('teleBotEnabled').checked = botConfig.teleEnabled;
 
     saveBtn.addEventListener('click', () => {
         const newConfig = {

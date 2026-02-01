@@ -1,43 +1,39 @@
-ALUR KERJA BOT NOTIFIKASI OTOMATIS (HERRYFIERSH)
-=================================================
+PANDUAN PENGGUNAAN BOT TELEGRAM (JIKA BOT MILIK ORANG LAIN/ADMIN)
+===================================================================
 
-Sistem ini dirancang untuk berjalan otomatis di latar belakang (background) selama halaman web dibuka di komputer/laptop.
+Panduan ini khusus jika Anda **Bukan Pemilik Bot**, tetapi hanya ingin menerima notifikasi dari bot yang sudah disediakan (misal: bot milik kantor/admin).
 
-1. PENGECEKAN WAKTU (Interval 45 Detik)
-   - Sistem browser memantau jam komputer Anda setiap 45 detik.
-   - Sistem mencocokkan "Jam Sekarang" dengan "Jam Jadwal Garapan".
-   - Rumus: Jam Jadwal - 10 Menit.
+ANDA HANYA BUTUH 2 LANGKAH MUDAH:
 
-2. TRIGGER (Jika Waktu Cocok)
-   Misal jadwal jam 10:00, maka pukul 09:50 trigger aktif:
-   A. Cek apakah Bot Telegram sudah diaktifkan di menu "Set Bot".
-   B. Cek apakah notifikasi untuk ID garapan tersebut sudah dikirim hari ini (agar tidak spam).
+LANGKAH 1: IZINKAN BOT MENGIRIM PESAN (WAJIB!)
+----------------------------------------------
+Karena bot ini bukan milik Anda, Anda harus memberinya izin dulu.
+1. Buka aplikasi Telegram.
+2. Cari nama bot ini: **@HerryFiershBot** (Ganti sesuai nama bot asli yang dipakai).
+   *Jika tidak tahu nama botnya, tanya ke pemilik/admin.*
+3. Klik tombol **START** / **MULAI**.
+   *Jika tidak klik Start, pesan tidak akan pernah masuk.*
 
-3. AKSI LOKAL (Di Komputer Anda)
-   - Browser memutar suara notifikasi ("Ting!").
-   - Muncul Popup Notifikasi di pojok layar (Windows/Browser Notification).
-   - Tujuannya: Memberi tahu Anda jika Anda sedang duduk di depan layar.
+LANGKAH 2: CARI ID TELEGRAM ANDA
+--------------------------------
+Bot perlu tahu "alamat" Telegram Anda.
+1. Di Telegram, cari bot lain bernama: **@userinfobot**
+2. Klik Start. Bot ini akan membalas dengan info profil Anda.
+3. Cari tulisan **Id** (angka unik, misal: `123456789`).
+4. Salin angka tersebut.
 
-4. AKSI REMOTE (Ke HP Anda)
-   - Browser mengirim sinyal rahasia (API Request) ke Server Telegram.
-   - Server Telegram meneruskan pesan teks ke Chat Telegram di HP Anda.
-   - Isi pesan: Nama Garapan, Cashback, dan Keterangan.
+LANGKAH 3: MASUKKAN KE WEBSITE
+------------------------------
+1. Buka menu "Garapan" di website.
+2. Klik tombol "Set Bot Telegram".
+3. **Kolom TOKEN**: JANGAN DIUBAH (Biarkan apa adanya, itu kode mesin botnya).
+4. **Kolom CHAT ID**: Masukkan Angka ID Anda tadi (dari Langkah 2).
+   *Mau kirim ke teman juga? Masukkan ID teman Anda dipisah koma.*
+5. Centang "Aktifkan" -> Simpan.
 
-3. SYARAT AGAR JALAN:
-   - Tab browser HerryFiersh harus terbuka (boleh di-minimize).
-   - Koneksi internet harus aktif.
-   - Token & Chat ID harus benar.
-   - BISA BANYAK PENERIMA: Masukkan beberapa Chat ID dipisahkan koma (contoh: 12345, 67890).
+SELESAI!
+Sekarang Anda tinggal menunggu. Jika ada garapan 10 menit lagi, bot itu akan otomatis mengirim pesan ke Telegram Anda.
 
-PENTING (HOSTING VS LOCAL):
-Meskipun website sudah di-hosting (online), sistem bot ini tetap berbasis "Browser Client". 
-Artinya:
-- Browser (Chrome/Edge/Firefox) di PC/HP Anda HARUS TETAP TERBUKA membuka halaman ini agar bot jalan.
-- Hosting hanya berfungsi agar Anda bisa mengakses halaman ini dari mana saja.
-- Hosting TIDAK menjalankan bot secara "Server Side" (Cron Job) melainkan "Client Side".
-
-Jika tab ditutup = Bot MATI.
-
----
-Technical Flow:
-Browser (JS Loop) -> Match Time -> Local Sound/Alert -> Fetch(Telegram API) -> User Mobile Device
+CATATAN:
+- Pastikan tab browser tetap terbuka (jika belum disetting Cron Job server).
+- Jika pesan tidak masuk, ulangi Langkah 1 (Mungkin lupa klik Start).
