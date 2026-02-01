@@ -20,9 +20,15 @@
     <!-- Active List -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="h5 mb-0 text-white"><i class="fa-solid fa-fire me-2 text-warning"></i>Jadwal Aktif: <span id="totalGarapan" class="text-primary-gradient">0</span></h3>
-        <a href="?page=garapan_input" class="btn btn-primary-gradient shadow-sm">
-            <i class="fa-solid fa-plus-circle me-2"></i> Tambah Garapan Baru
-        </a>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-success border-0 glass-panel py-2 px-3 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#waBotModal">
+                <i class="fa-brands fa-whatsapp fs-5 text-success"></i>
+                <span class="small fw-bold d-none d-md-inline text-success">Set Bot</span>
+            </button>
+            <a href="?page=garapan_input" class="btn btn-primary-gradient shadow-sm">
+                <i class="fa-solid fa-plus-circle me-2"></i> Tambah Garapan Baru
+            </a>
+        </div>
     </div>
 
     <div class="glass-panel p-0 mb-5 overflow-hidden shadow-sm" style="background-color: #13192f; border-radius: 8px; border: 1px solid #1e293b;">
@@ -59,6 +65,55 @@
             <small class="text-secondary">Belum ada riwayat garapan selesai.</small>
         </div>
     </div>
+    <audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+</div>
+
+<!-- WhatsApp Bot Config Modal -->
+<div class="modal fade" id="waBotModal" tabindex="-1" aria-hidden="true" style="z-index: 9999;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-white shadow-lg">
+            <div class="modal-header border-bottom border-light-10 p-4">
+                <h5 class="modal-title d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary-soft p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background: rgba(56, 189, 248, 0.1);">
+                        <i class="fa-brands fa-telegram text-info"></i>
+                    </div>
+                    Setup Bot Telegram
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="alert alert-info py-2 small mb-3" style="background: rgba(56, 189, 248, 0.05); border-color: rgba(56, 189, 248, 0.2); color: #94a3b8;">
+                    <i class="fa-brands fa-telegram me-2"></i><b>Panduan Singkat:</b><br>
+                    1. Masukkan <b>Chat ID</b> Anda (Wajib).<br>
+                    2. Untuk tahu Chat ID, chat ke bot <code>@userinfobot</code> di Telegram.<br>
+                    3. Centang "Aktifkan" dan Simpan.
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label small text-secondary fw-bold">BOT TOKEN</label>
+                    <input type="text" id="teleBotToken" class="form-control bg-dark text-white border-secondary" value="8114128194:AAH5S2k2kTtigRnjA9zD2YbwN3vA8W3_pjU">
+                    <div class="form-text opacity-50 small">Token default HerryFiersh Bot (Jangan diubah jika tidak punya bot sendiri).</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label small text-secondary fw-bold">CHAT ID (BISA BANYAK)</label>
+                    <input type="text" id="teleChatId" class="form-control bg-dark text-white border-secondary" placeholder="Contoh: 123456, 987654">
+                    <div class="form-text opacity-50 small">Pisahkan dengan koma (,) jika lebih dari satu.</div>
+                </div>
+                
+                <div class="form-check form-switch p-0 ms-4">
+                    <input class="form-check-input" type="checkbox" id="teleBotEnabled" style="cursor: pointer;">
+                    <label class="form-check-label small fw-bold text-white-50" for="teleBotEnabled">AKTIFKAN BOT OTOMATIS</label>
+                </div>
+            </div>
+            <div class="modal-footer border-top border-light-10 p-3">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-success px-4" id="saveBotConfig">
+                    <i class="fa-solid fa-check-circle me-2"></i> Simpan & Aktifkan
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -69,6 +124,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const historyBadge = document.getElementById('totalHistory');
     const emptyHistory = document.getElementById('emptyHistory');
     const apiPath = '<?php echo $base_url; ?>api/garapan_api.php';
+    const configPath = '<?php echo $base_url; ?>api/save_bot_config.php';
+    
+    let activeData = [];
+    const defaultTeleToken = '8114128194:AAH5S2k2kTtigRnjA9zD2YbwN3vA8W3_pjU';
+    
+    let botConfig = {
+        teleToken: localStorage.getItem('teleBotToken') || defaultTeleToken,
+        teleChatId: localStorage.getItem('teleChatId') || '',
+        teleEnabled: localStorage.getItem('teleBotEnabled') === 'true'
+    };
 
     function updateClock() {
         const now = new Date();
@@ -113,6 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 renderActive(active);
                 renderHistory(finished);
                 
+                activeData = active; // Store for reminders
                 totalBadge.textContent = active.length;
                 historyBadge.textContent = `${finished.length} Item`;
             })
@@ -246,6 +312,108 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     loadData();
+
+    // --- Bot Logic (Telegram Only) ---
+    function checkReminders() {
+        const now = new Date();
+        const currentDay = now.toISOString().split('T')[0];
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+        
+        activeData.forEach(item => {
+            if (!item.jam) return;
+            
+            const [h, m] = item.jam.split(':').map(Number);
+            const taskTime = h * 60 + m;
+            const diff = taskTime - currentTime;
+            
+            // Trigger 10 minutes before
+            if (diff === 10) {
+                // Telegram Logic
+                if (botConfig.teleEnabled && botConfig.teleToken && botConfig.teleChatId) {
+                    const teleKeyStore = `tele_sent_${item.id}_${currentDay}`;
+                    if (!localStorage.getItem(teleKeyStore)) {
+                        sendTelegram(item);
+                        localStorage.setItem(teleKeyStore, 'true');
+                    }
+                }
+            }
+        });
+    }
+
+    function sendTelegram(item) {
+        // 1. Notification Visual & Sound for local monitoring
+        const audio = document.getElementById('alertSound');
+        if(audio) audio.play().catch(e => console.log("Sound blocked"));
+        
+        if ("Notification" in window && Notification.permission === "granted") {
+            new Notification("🤖 BOT TELEGRAM AKTIF", {
+                body: `Mengirim notifikasi otomatis untuk: ${item.nama_garapan}`,
+                icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/512px-Telegram_logo.svg.png"
+            });
+        }
+
+        // 2. Send to Telegram API (Support Multiple IDs)
+        const text = `🔔 *PENGINGAT GARAPAN* (10 Menit Lagi)\n\n📌 *Projek:* ${item.nama_garapan}\n⏰ *Jam:* ${item.jam} WIB\n💰 *Promo:* Rp ${item.cashback || '0'}\n📝 *Ket:* ${item.keterangan || '-'}`;
+        
+        // Split IDs by comma and trim whitespace
+        const chatIds = botConfig.teleChatId.split(',').map(id => id.trim()).filter(id => id);
+
+        chatIds.forEach(chatId => {
+            const url = `https://api.telegram.org/bot${botConfig.teleToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
+
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    if(data.ok) console.log(`Telegram Sent to ${chatId}`);
+                    else console.error(`Telegram Error (${chatId}):`, data);
+                })
+                .catch(err => console.error(`Tele Fetch Error (${chatId}):`, err));
+        });
+    }
+
+    // Modal Handling
+    const saveBtn = document.getElementById('saveBotConfig');
+    
+    // Set initial values
+    document.getElementById('teleBotToken').value = botConfig.teleToken;
+    document.getElementById('teleChatId').value = botConfig.teleChatId;
+    document.getElementById('teleBotEnabled').checked = botConfig.teleEnabled;
+
+    saveBtn.addEventListener('click', () => {
+        const newConfig = {
+            teleToken: document.getElementById('teleBotToken').value.trim(),
+            teleChatId: document.getElementById('teleChatId').value.trim(),
+            teleEnabled: document.getElementById('teleBotEnabled').checked
+        };
+
+        if (newConfig.teleEnabled && (!newConfig.teleToken || !newConfig.teleChatId)) {
+            alert('Token & Chat ID Telegram wajib diisi jika diaktifkan!');
+            return;
+        }
+        
+        // Save to Server (for Cron Job)
+        fetch(configPath, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newConfig)
+        }).then(res => res.json())
+          .then(data => console.log('Server Config Saved:', data))
+          .catch(err => console.error('Save Error:', err));
+
+        // Save Local (for Browser Alert)
+        localStorage.setItem('teleBotToken', newConfig.teleToken);
+        localStorage.setItem('teleChatId', newConfig.teleChatId);
+        localStorage.setItem('teleBotEnabled', newConfig.teleEnabled);
+        
+        botConfig = newConfig; // Update global config
+        
+        const modalEl = document.getElementById('waBotModal');
+        const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        modalInstance.hide();
+        alert('Bot Telegram Berhasil Disimpan (Local & Server)!');
+    });
+
+    setInterval(checkReminders, 45000); // Check every 45s
 });
 </script>
 
