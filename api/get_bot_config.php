@@ -11,7 +11,10 @@ if (file_exists($configFile)) {
     echo json_encode([
         'teleToken' => '',
         'teleChatId' => '',
-        'teleEnabled' => false
+        'teleEnabled' => false,
+        'waApiKey' => '',
+        'waRecipient' => '',
+        'waEnabled' => false
     ]);
 }
 ?>

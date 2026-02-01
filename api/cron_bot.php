@@ -20,8 +20,9 @@ $botConfig = json_decode(file_get_contents($configFile), true);
 $botLog = file_exists($logFile) ? json_decode(file_get_contents($logFile), true) : [];
 if (!is_array($botLog)) $botLog = [];
 
-if (empty($botConfig['teleEnabled']) || empty($botConfig['teleToken']) || empty($botConfig['teleChatId'])) {
-    echo json_encode(['status' => 'skipped', 'message' => 'Bot disabled or incomplete config']);
+if ((empty($botConfig['teleEnabled']) || empty($botConfig['teleToken']) || empty($botConfig['teleChatId'])) && 
+    (empty($botConfig['waEnabled']) || empty($botConfig['waApiKey']) || empty($botConfig['waRecipient']))) {
+    echo json_encode(['status' => 'skipped', 'message' => 'Both Bots disabled or incomplete config']);
     exit;
 }
 
@@ -60,41 +61,72 @@ foreach ($garapanData as $item) {
         if (in_array($logKey, $sent_ids)) continue;
 
         // Send Telegram
-        $chatIds = array_filter(array_map('trim', explode(',', $botConfig['teleChatId'])));
-        
-        // Debug Log
-        error_log("Sending to IDs: " . implode(", ", $chatIds));
-        
-        foreach ($chatIds as $chatId) {
+        if (!empty($botConfig['teleEnabled']) && !empty($botConfig['teleToken']) && !empty($botConfig['teleChatId'])) {
+            $chatIds = array_filter(array_map('trim', explode(',', $botConfig['teleChatId'])));
+            
+            // Debug Log
+            error_log("Sending Telegram to IDs: " . implode(", ", $chatIds));
+            
+            foreach ($chatIds as $chatId) {
+                $msg = "🔔 *PENGINGAT GARAPAN* (10 Menit Lagi)\n\n📌 *Projek:* " . $item['nama_garapan'] . 
+                       "\n⏰ *Jam:* " . $item['jam'] . " WIB" .
+                       "\n💰 *Promo:* Rp " . ($item['cashback'] ?? '0') . 
+                       "\n📝 *Ket:* " . ($item['keterangan'] ?? '-');
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, "https://api.telegram.org/bot" . $botConfig['teleToken'] . "/sendMessage");
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                    'chat_id' => $chatId,
+                    'text' => $msg,
+                    'parse_mode' => 'Markdown'
+                ]));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                
+                $server_output = curl_exec($ch);
+                $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+
+                $logEntries[] = [
+                    'id' => $logKey,
+                    'bot' => 'telegram',
+                    'chat_id' => $chatId,
+                    'http_code' => $http_code,
+                    'response' => json_decode($server_output, true)
+                ];
+                $sentCount++;
+            }
+        }
+
+        // Send WhatsApp (TextMeBot)
+        if (!empty($botConfig['waEnabled']) && !empty($botConfig['waApiKey']) && !empty($botConfig['waRecipient'])) {
             $msg = "🔔 *PENGINGAT GARAPAN* (10 Menit Lagi)\n\n📌 *Projek:* " . $item['nama_garapan'] . 
                    "\n⏰ *Jam:* " . $item['jam'] . " WIB" .
                    "\n💰 *Promo:* Rp " . ($item['cashback'] ?? '0') . 
                    "\n📝 *Ket:* " . ($item['keterangan'] ?? '-');
 
-            // Use cURL for better reliability and error capture
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "https://api.telegram.org/bot" . $botConfig['teleToken'] . "/sendMessage");
+            curl_setopt($ch, CURLOPT_URL, "https://api.textmebot.com/send.php");
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-                'chat_id' => $chatId,
-                'text' => $msg,
-                'parse_mode' => 'Markdown'
+                'recipient' => $botConfig['waRecipient'],
+                'apikey' => $botConfig['waApiKey'],
+                'text' => $msg
             ]));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Fix for some hosting environs
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             
             $server_output = curl_exec($ch);
             $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            $curl_error = curl_error($ch);
             curl_close($ch);
 
-            // Log result for debug
             $logEntries[] = [
                 'id' => $logKey,
-                'chat_id' => $chatId,
+                'bot' => 'whatsapp',
+                'recipient' => $botConfig['waRecipient'],
                 'http_code' => $http_code,
-                'response' => json_decode($server_output, true),
-                'curl_error' => $curl_error
+                'response' => $server_output // TextMeBot might not return JSON
             ];
             $sentCount++;
         }

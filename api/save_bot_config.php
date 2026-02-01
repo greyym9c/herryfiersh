@@ -14,7 +14,10 @@ if (!$input) {
 $data = [
     'teleToken' => $input['teleToken'] ?? '',
     'teleChatId' => $input['teleChatId'] ?? '',
-    'teleEnabled' => $input['teleEnabled'] ?? false
+    'teleEnabled' => $input['teleEnabled'] ?? false,
+    'waApiKey' => $input['waApiKey'] ?? '',
+    'waRecipient' => $input['waRecipient'] ?? '',
+    'waEnabled' => $input['waEnabled'] ?? false
 ];
 
 if (file_put_contents($configFile, json_encode($data, JSON_PRETTY_PRINT))) {

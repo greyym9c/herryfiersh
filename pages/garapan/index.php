@@ -75,41 +75,72 @@
             <div class="modal-header border-bottom border-light-10 p-4">
                 <h5 class="modal-title d-flex align-items-center gap-3">
                     <div class="rounded-circle bg-primary-soft p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background: rgba(56, 189, 248, 0.1);">
-                        <i class="fa-brands fa-telegram text-info"></i>
+                        <i class="fa-solid fa-robot text-info"></i>
                     </div>
-                    Setup Bot Telegram
+                    Konfigurasi Bot Notifikasi
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body p-4">
-                <div class="alert alert-info py-2 small mb-3" style="background: rgba(56, 189, 248, 0.05); border-color: rgba(56, 189, 248, 0.2); color: #94a3b8;">
-                    <i class="fa-brands fa-telegram me-2"></i><b>Panduan Singkat:</b><br>
-                    1. Masukkan <b>Chat ID</b> Anda (Wajib).<br>
-                    2. Untuk tahu Chat ID, chat ke bot <code>@userinfobot</code> di Telegram.<br>
-                    3. Centang "Aktifkan" dan Simpan.
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label small text-secondary fw-bold">BOT TOKEN</label>
-                    <input type="text" id="teleBotToken" class="form-control bg-dark text-white border-secondary" value="8114128194:AAH5S2k2kTtigRnjA9zD2YbwN3vA8W3_pjU">
-                    <div class="form-text opacity-50 small">Token default HerryFiersh Bot (Jangan diubah jika tidak punya bot sendiri).</div>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label small text-secondary fw-bold">CHAT ID (BISA BANYAK)</label>
-                    <input type="text" id="teleChatId" class="form-control bg-dark text-white border-secondary" placeholder="Contoh: 123456, 987654">
-                    <div class="form-text opacity-50 small">Pisahkan dengan koma (,) jika lebih dari satu.</div>
-                </div>
-                
-                <div class="form-check form-switch p-0 ms-4">
-                    <input class="form-check-input" type="checkbox" id="teleBotEnabled" style="cursor: pointer;">
-                    <label class="form-check-label small fw-bold text-white-50" for="teleBotEnabled">AKTIFKAN BOT OTOMATIS</label>
+            <div class="modal-body p-0">
+                <!-- Nav Tabs -->
+                <ul class="nav nav-tabs nav-fill border-bottom border-light-10" id="botTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active py-3 text-white border-0" id="tele-tab" data-bs-toggle="tab" data-bs-target="#tele-panel" type="button" role="tab">
+                            <i class="fa-brands fa-telegram me-2 text-info"></i> Telegram
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link py-3 text-white border-0" id="wa-tab" data-bs-toggle="tab" data-bs-target="#wa-panel" type="button" role="tab">
+                            <i class="fa-brands fa-whatsapp me-2 text-success"></i> WhatsApp
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Panes -->
+                <div class="tab-content p-4" id="botTabsContent">
+                    <!-- Telegram Panel -->
+                    <div class="tab-pane fade show active" id="tele-panel" role="tabpanel">
+                        <div class="alert alert-info py-2 small mb-3" style="background: rgba(56, 189, 248, 0.05); border-color: rgba(56, 189, 248, 0.2); color: #94a3b8;">
+                            <i class="fa-brands fa-telegram me-2"></i><b>Telegram:</b> Chat ke <code>@userinfobot</code> untuk tahu Chat ID Anda.
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-secondary fw-bold">BOT TOKEN</label>
+                            <input type="text" id="teleBotToken" class="form-control bg-dark text-white border-secondary" placeholder="Masukkan token bot...">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-secondary fw-bold">CHAT ID (BISA BANYAK)</label>
+                            <input type="text" id="teleChatId" class="form-control bg-dark text-white border-secondary" placeholder="Contoh: 123456, 987654">
+                        </div>
+                        <div class="form-check form-switch p-0 ms-4">
+                            <input class="form-check-input" type="checkbox" id="teleBotEnabled" style="cursor: pointer;">
+                            <label class="form-check-label small fw-bold text-white-50" for="teleBotEnabled">AKTIFKAN TELEGRAM</label>
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp Panel -->
+                    <div class="tab-pane fade" id="wa-panel" role="tabpanel">
+                        <div class="alert alert-success py-2 small mb-3" style="background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2); color: #94a3b8;">
+                            <i class="fa-brands fa-whatsapp me-2 text-success"></i><b>WhatsApp:</b> Menggunakan <b>TextMeBot</b>. Dapatkan API Key di <a href="https://www.textmebot.com/" target="_blank" class="text-success text-decoration-none fw-bold">textmebot.com</a>.
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-secondary fw-bold">TEXTMEBOT API KEY</label>
+                            <input type="text" id="waApiKey" class="form-control bg-dark text-white border-secondary" placeholder="Contoh: a1b2c3d4e5f6">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-secondary fw-bold">NOMOR WA (PENERIMA)</label>
+                            <input type="text" id="waRecipient" class="form-control bg-dark text-white border-secondary" placeholder="Format: 628123XXX">
+                        </div>
+                        <div class="form-check form-switch p-0 ms-4">
+                            <input class="form-check-input" type="checkbox" id="waEnabled" style="cursor: pointer;">
+                            <label class="form-check-label small fw-bold text-white-50" for="waEnabled">AKTIFKAN WHATSAPP</label>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer border-top border-light-10 p-3">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-success px-4" id="saveBotConfig">
-                    <i class="fa-solid fa-check-circle me-2"></i> Simpan & Aktifkan
+                <button type="button" class="btn btn-primary px-4" id="saveBotConfig">
+                    <i class="fa-solid fa-save me-2"></i> Simpan Konfigurasi
                 </button>
             </div>
         </div>
@@ -134,7 +165,10 @@ document.addEventListener('DOMContentLoaded', function() {
     let botConfig = {
         teleToken: defaultTeleToken,
         teleChatId: '',
-        teleEnabled: false
+        teleEnabled: false,
+        waApiKey: '',
+        waRecipient: '',
+        waEnabled: false
     };
 
     // Load Config from Server with Cache Busting
@@ -154,6 +188,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.teleChatId !== undefined) botConfig.teleChatId = data.teleChatId;
                 botConfig.teleEnabled = data.teleEnabled === true || data.teleEnabled === "true";
                 
+                if (data.waApiKey !== undefined) botConfig.waApiKey = data.waApiKey;
+                if (data.waRecipient !== undefined) botConfig.waRecipient = data.waRecipient;
+                botConfig.waEnabled = data.waEnabled === true || data.waEnabled === "true";
+                
                 updateModalUI();
             })
             .catch(err => {
@@ -167,26 +205,37 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function setModalLoading(isLoading) {
-        const tokenInput = document.getElementById('teleBotToken');
-        const chatInput = document.getElementById('teleChatId');
-        const saveBtn = document.getElementById('saveBotConfig');
+        const inputs = [
+            'teleBotToken', 'teleChatId', 'teleBotEnabled',
+            'waApiKey', 'waRecipient', 'waEnabled',
+            'saveBotConfig'
+        ];
         
-        if (tokenInput) tokenInput.disabled = isLoading;
-        if (chatInput) {
-            chatInput.disabled = isLoading;
-            chatInput.placeholder = isLoading ? "Sedang memuat data..." : "Contoh: 123456, 987654";
-        }
-        if (saveBtn) saveBtn.disabled = isLoading;
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.disabled = isLoading;
+        });
+
+        const chatInput = document.getElementById('teleChatId');
+        if (chatInput && isLoading) chatInput.placeholder = "Sedang memuat data...";
     }
 
     function updateModalUI() {
-        const tokenInput = document.getElementById('teleBotToken');
-        const chatInput = document.getElementById('teleChatId');
-        const enabledInput = document.getElementById('teleBotEnabled');
+        const mapping = {
+            'teleBotToken': botConfig.teleToken,
+            'teleChatId': botConfig.teleChatId,
+            'teleBotEnabled': botConfig.teleEnabled,
+            'waApiKey': botConfig.waApiKey,
+            'waRecipient': botConfig.waRecipient,
+            'waEnabled': botConfig.waEnabled
+        };
 
-        if (tokenInput && botConfig.teleToken) tokenInput.value = botConfig.teleToken;
-        if (chatInput && botConfig.teleChatId) chatInput.value = botConfig.teleChatId;
-        if (enabledInput) enabledInput.checked = botConfig.teleEnabled;
+        for (const [id, val] of Object.entries(mapping)) {
+            const el = document.getElementById(id);
+            if (!el) continue;
+            if (el.type === 'checkbox') el.checked = val;
+            else el.value = val || '';
+        }
     }
 
     // Load on start
@@ -545,8 +594,38 @@ document.addEventListener('DOMContentLoaded', function() {
                         localStorage.setItem(teleKeyStore, 'true');
                     }
                 }
+
+                // WhatsApp Logic
+                if (botConfig.waEnabled && botConfig.waApiKey && botConfig.waRecipient) {
+                    const waKeyStore = `wa_sent_${item.id}_${currentDay}`;
+                    if (!localStorage.getItem(waKeyStore)) {
+                        sendWhatsApp(item);
+                        localStorage.setItem(waKeyStore, 'true');
+                    }
+                }
             }
         });
+    }
+
+    function sendWhatsApp(item) {
+        // notification Visual & Sound
+        const audio = document.getElementById('alertSound');
+        if(audio) audio.play().catch(e => console.log("Sound blocked"));
+        
+        if ("Notification" in window && Notification.permission === "granted") {
+            new Notification("🤖 BOT WHATSAPP AKTIF", {
+                body: `Mengirim WA untuk: ${item.nama_garapan}`,
+                icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/512px-WhatsApp.svg.png"
+            });
+        }
+
+        const text = `🔔 *PENGINGAT GARAPAN* (10 Menit Lagi)\n\n📌 *Projek:* ${item.nama_garapan}\n⏰ *Jam:* ${item.jam} WIB\n💰 *Promo:* Rp ${item.cashback || '0'}\n📝 *Ket:* ${item.keterangan || '-'}`;
+        
+        const url = `https://api.textmebot.com/send.php?recipient=${botConfig.waRecipient}&apikey=${botConfig.waApiKey}&text=${encodeURIComponent(text)}`;
+
+        fetch(url, { mode: 'no-cors' }) // textmebot might have cors issues, no-cors still sends but can't read response
+            .then(() => console.log('WhatsApp Request Sent (no-cors)'))
+            .catch(err => console.error('WhatsApp Error:', err));
     }
 
     function sendTelegram(item) {
@@ -594,11 +673,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const newConfig = {
             teleToken: document.getElementById('teleBotToken').value.trim(),
             teleChatId: document.getElementById('teleChatId').value.trim(),
-            teleEnabled: document.getElementById('teleBotEnabled').checked
+            teleEnabled: document.getElementById('teleBotEnabled').checked,
+            waApiKey: document.getElementById('waApiKey').value.trim(),
+            waRecipient: document.getElementById('waRecipient').value.trim(),
+            waEnabled: document.getElementById('waEnabled').checked
         };
 
         if (newConfig.teleEnabled && (!newConfig.teleToken || !newConfig.teleChatId)) {
             alert('Token & Chat ID Telegram wajib diisi jika diaktifkan!');
+            return;
+        }
+
+        if (newConfig.waEnabled && (!newConfig.waApiKey || !newConfig.waRecipient)) {
+            alert('API Key & Nomor WhatsApp wajib diisi jika diaktifkan!');
             return;
         }
         
@@ -608,20 +695,20 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newConfig)
         }).then(res => res.json())
-          .then(data => console.log('Server Config Saved:', data))
-          .catch(err => console.error('Save Error:', err));
+          .then(data => {
+            console.log('Server Config Saved:', data);
+            alert('Konfigurasi Bot Berhasil Disimpan!');
+          })
+          .catch(err => {
+            console.error('Save Error:', err);
+            alert('Gagal menyimpan konfigurasi ke server.');
+          });
 
-        // Save Local (for Browser Alert)
-        localStorage.setItem('teleBotToken', newConfig.teleToken);
-        localStorage.setItem('teleChatId', newConfig.teleChatId);
-        localStorage.setItem('teleBotEnabled', newConfig.teleEnabled);
-        
         botConfig = newConfig; // Update global config
         
         const modalEl = document.getElementById('waBotModal');
         const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
         modalInstance.hide();
-        alert('Bot Telegram Berhasil Disimpan (Local & Server)!');
     });
 
     setInterval(checkReminders, 45000); // Check every 45s
@@ -632,6 +719,22 @@ document.addEventListener('DOMContentLoaded', function() {
 .border-light-10 { border-color: rgba(255, 255, 255, 0.05) !important; }
 .text-primary-gradient { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
 .bg-primary-gradient { background: var(--accent-gradient); border: none; }
+
+/* Bot Modal Tabs */
+#waBotModal .nav-tabs .nav-link {
+    background: transparent;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent !important;
+}
+#waBotModal .nav-tabs .nav-link.active {
+    opacity: 1;
+    color: var(--bs-primary) !important;
+    border-bottom: 2px solid var(--bs-primary) !important;
+}
+#waBotModal .nav-link:hover {
+    opacity: 1;
+}
 
 /* Precise Action Buttons */
 .btn-action {
