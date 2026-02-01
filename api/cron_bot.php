@@ -102,6 +102,7 @@ echo json_encode([
     'server_time' => date('H:i') . ' WIB',
     'message' => "Checked " . count($garapanData) . " tasks.",
     'sent_count' => $sentCount,
+    'api_responses' => $logEntries,
     'debug_log' => array_map(function($i) use ($currentTimeVal) {
         if(empty($i['jam'])) return null;
         list($h, $m) = explode(':', $i['jam']);
