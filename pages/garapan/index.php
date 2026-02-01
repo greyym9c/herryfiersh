@@ -21,7 +21,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="h5 mb-0 text-white"><i class="fa-solid fa-fire me-2 text-warning"></i>Jadwal Aktif: <span id="totalGarapan" class="text-primary-gradient">0</span></h3>
         <div class="d-flex gap-2">
-            <button class="btn btn-outline-success border-0 glass-panel py-2 px-3 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#waBotModal">
+            <button id="trigger-bot-modal" class="btn btn-outline-success border-0 glass-panel py-2 px-3 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#waBotModal">
                 <i class="fa-brands fa-whatsapp fs-5 text-success"></i>
                 <span class="small fw-bold d-none d-md-inline text-success">Set Bot</span>
             </button>
@@ -87,6 +87,8 @@
                     1. Masukkan <b>Chat ID</b> Anda (Wajib).<br>
                     2. Untuk tahu Chat ID, chat ke bot <code>@userinfobot</code> di Telegram.<br>
                     3. Centang "Aktifkan" dan Simpan.
+                    3. Centang "Aktifkan" dan Simpan.
+                    <button type="button" class="btn btn-sm btn-outline-info ms-2" id="refreshBotConfig" title="Reload Config"><i class="fa-solid fa-sync"></i> Refresh Data</button>
                 </div>
                 
                 <div class="mb-3">
@@ -430,6 +432,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Modal Handling
     const saveBtn = document.getElementById('saveBotConfig');
+    const triggerBtn = document.getElementById('trigger-bot-modal');
+    const refreshBtn = document.getElementById('refreshBotConfig');
+
+    if (triggerBtn) {
+        triggerBtn.addEventListener('click', () => {
+            loadBotConfig();
+        });
+    }
+
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => {
+            loadBotConfig();
+        });
+    }
 
     saveBtn.addEventListener('click', () => {
         const newConfig = {
