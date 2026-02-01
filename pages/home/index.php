@@ -1,4 +1,4 @@
-<div class="container animate-fade-in py-5">
+<div class="container py-5">
     <div class="text-center py-5">
         <h1 class="display-3 fw-bold mb-3">
             <span class="bg-gradient-primary" style="background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
