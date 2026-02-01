@@ -76,9 +76,23 @@ if (count($botLog) > 2) {
 }
 file_put_contents($logFile, json_encode($botLog));
 
+// 5. Output for manual checking
 echo json_encode([
     'status' => 'success',
-    'time_checked' => date('H:i:s'), 
-    'sent_count' => $sentCount
-]);
+    'server_time' => date('H:i') . ' WIB',
+    'message' => "Checked " . count($garapanData) . " tasks.",
+    'sent_count' => $sentCount,
+    'debug_log' => array_map(function($i) use ($currentTimeVal) {
+        if(empty($i['jam'])) return null;
+        list($h, $m) = explode(':', $i['jam']);
+        $taskTime = ($h * 60) + $m;
+        $diff = $taskTime - $currentTimeVal;
+        return [
+            'item' => $i['nama_garapan'],
+            'jam' => $i['jam'],
+            'diff_minutes' => $diff,
+            'status' => ($diff === 10) ? 'TRIGGERED' : 'WAITING'
+        ];
+    }, $garapanData)
+], JSON_PRETTY_PRINT);
 ?>
