@@ -175,18 +175,23 @@ document.addEventListener('DOMContentLoaded', function() {
         emptyHistory.classList.add('d-none');
         historyBody.innerHTML = data.map(item => `
             <tr class="border-bottom border-light-10 opacity-75">
-                <td class="ps-4 py-2" colspan="2">
+                <td class="ps-4 py-3" colspan="2">
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
                         <div class="d-flex align-items-center gap-3">
                             <i class="fa-solid fa-circle-check text-success"></i>
                             <div>
                                 <div class="fw-bold text-white small">${item.nama_garapan}</div>
-                                <div class="text-white-50" style="font-size: 0.75rem;">Selesai: ${formatDate(item.tgl_selesai)} ${item.cashback ? `| CB: Rp ${item.cashback}` : ''}</div>
+                                <div class="text-white opacity-75" style="font-size: 0.75rem;">Selesai: ${formatDate(item.tgl_selesai)} ${item.cashback ? `| CB: Rp ${item.cashback}` : ''}</div>
                             </div>
                         </div>
-                        <button class="btn-action btn-delete" style="width: 32px; height: 32px;" onclick="deleteItem('${item.id}')" title="Hapus Riwayat">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
+                        <div class="d-flex gap-2">
+                            <button class="btn-action btn-restore" style="width: 32px; height: 32px;" onclick="restoreItem('${item.id}')" title="Pulihkan ke Jadwal Aktif">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                            <button class="btn-action btn-delete" style="width: 32px; height: 32px;" onclick="deleteItem('${item.id}')" title="Hapus Riwayat">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -200,6 +205,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 const item = data.find(i => i.id == id);
                 if (item) {
                     item.status = 'finished';
+                    fetch(apiPath, {
+                        method: 'POST',
+                        body: JSON.stringify(item)
+                    })
+                    .then(res => res.json())
+                    .then(res => { if (res.success) loadData(); });
+                }
+            });
+    };
+
+    window.restoreItem = function(id) {
+        fetch(apiPath)
+            .then(res => res.json())
+            .then(data => {
+                const item = data.find(i => i.id == id);
+                if (item) {
+                    item.status = 'active';
+                    const today = new Date().toISOString().split('T')[0];
+                    if (item.tgl_selesai && item.tgl_selesai < today) {
+                        item.tgl_selesai = null;
+                    }
                     fetch(apiPath, {
                         method: 'POST',
                         body: JSON.stringify(item)
@@ -253,6 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .btn-finish:hover { background: #10b981; border-color: #10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
 .btn-edit:hover { background: #0ea5e9; border-color: #0ea5e9; box-shadow: 0 0 15px rgba(14, 165, 233, 0.4); }
 .btn-delete:hover { background: #ef4444; border-color: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+.btn-restore:hover { background: #6366f1; border-color: #6366f1; box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); }
 
 .btn-delete-sm {
     width: 28px;
