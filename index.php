@@ -12,7 +12,7 @@ if (php_sapi_name() === 'cli-server') {
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
 // Valid pages whitelist to prevent LFI
-$allowed_pages = ['home', 'barcode', 'gold', 'struk', 'zakat', 'treasury', 'saham', 'crypto', 'about'];
+$allowed_pages = ['home', 'barcode', 'struk', 'treasury', 'saham', 'crypto', 'garapan', 'garapan_input'];
 
 if (!in_array($page, $allowed_pages)) {
     $page = 'home';

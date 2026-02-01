@@ -1,0 +1,20 @@
+[
+    {
+        "id": "697ee7c9139ae",
+        "nama_garapan": "IM3 X OVO",
+        "jam": "09:00",
+        "periode": "Harian",
+        "keterangan": "Beli Pulsa 20K di MyIM3, bayar 21K Cashback 10K",
+        "tgl_mulai": "2026-02-01",
+        "tgl_selesai": "2026-02-24"
+    },
+    {
+        "id": "697ee992a75fc",
+        "nama_garapan": "AG X OVO",
+        "jam": "00:00",
+        "periode": "Harian",
+        "keterangan": "Beli giftcard 100k x 10 Cashback 50K, Beli giftcard 100k x 20 Cashback 100K",
+        "tgl_mulai": "2026-02-01",
+        "tgl_selesai": "2026-02-24"
+    }
+]

@@ -1,10 +1,7 @@
-<footer class="text-center py-4 text-muted border-top border-white-10 mt-5">
+<footer class="text-center py-4 text-white border-top border-white-10 mt-5">
     <div class="container">
         <p class="mb-0 small">
             &copy; <?php echo date('Y'); ?> <strong>HerryFiersh</strong>. All rights reserved. <br>
-            <span class="opacity-75">Solusi Cerdas Finansial & Produktivitas</span>
-        </p>
-        <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">Developed with <i class="fa-solid fa-heart" style="color: #ef4444;"></i> for UMKM Indonesia</p>
     </div>
 </footer>
 

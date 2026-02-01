@@ -1,20 +1,38 @@
 <?php
 // pages/struk/index.php
 ?>
-<div class="container animate-fade-in" style="padding: 2rem 0;">
-    <div class="no-print mb-4">
-        <a href="/herryfiersh/" class="text-secondary text-decoration-none d-inline-flex align-items-center gap-2 mb-3">
-            <i class="fa-solid fa-arrow-left"></i> Kembali
-        </a>
-        <h1 class="h2 fw-bold text-white mb-2">Buat Struk</h1>
-        <p class="text-secondary">Buat struk penjualan digital profesional untuk toko Anda.</p>
+<div class="container animate-fade-in py-3 no-print">
+    <!-- Header -->
+    <div class="glass-panel p-3 mb-4 d-flex justify-content-between align-items-center bg-gradient-primary">
+        <h2 class="h4 fw-bold text-white mb-0 text-uppercase"><i class="fa-solid fa-receipt me-2"></i>Generator Struk Digital</h2>
+        <div class="text-white fw-bold d-flex align-items-center gap-2">
+            <span id="realtimeClock" class="text-white fw-bold" style="font-size: 20pt; line-height: 1;">Loading...</span>
+        </div>
     </div>
+
+    <!-- Aesthetic Big Clock -->
+    <div class="glass-panel text-center mb-4 py-4 position-relative overflow-hidden animate-fade-in" style="border: 1px solid rgba(255,255,255,0.08);">
+        <div class="position-relative" style="z-index: 2;">
+            <div class="text-secondary small text-uppercase mb-2 fw-bold" style="letter-spacing: 4px; font-size: 0.7rem;">Jakarta, Indonesia (WIB)</div>
+            <div id="bigRealtimeClock" class="fw-bold lh-1 time-is-font" style="font-size: 4.5rem; letter-spacing: -2px;">Loading...</div>
+            <div id="currentDate" class="text-secondary mt-2 fw-medium" style="font-size: 1.1rem;">-</div>
+        </div>
+        <div class="position-absolute top-50 start-50 translate-middle" style="width: 200px; height: 200px; background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%); z-index: 1; filter: blur(40px);"></div>
+    </div>
+</div>
+
+<div class="container animate-fade-in pb-5">
 
     <div class="row">
         <!-- Input Form (Left Side) -->
         <div class="col-lg-5 mb-4 no-print">
-            <div class="glass-panel p-4 h-100">
-                <h4 class="text-primary-gradient mb-4 fw-bold">Atur Struk Anda</h4>
+            <div class="glass-panel p-4 h-100" style="background-color: #13192f; border: 1px solid #1e293b;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="text-white mb-0 fw-bold"><i class="fa-solid fa-file-pen me-2 text-primary"></i> Atur Struk</h4>
+                    <a href="/herryfiersh/" class="btn btn-sm btn-outline-secondary no-print">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Kembali
+                    </a>
+                </div>
 
                 <!-- Logo Section -->
                 <div class="mb-3">
@@ -116,11 +134,11 @@
                 
                 <!-- Action Buttons -->
                 <div class="d-grid gap-2">
-                    <button class="btn btn-success" onclick="window.print()">
-                        <i class="fa-solid fa-print me-2"></i> Cetak Struk
+                    <button class="btn btn-success py-2 fw-bold" onclick="window.print()">
+                        <i class="fa-solid fa-print me-2"></i> CETAK STRUK SEKARANG
                     </button>
-                    <button class="btn btn-info text-white" onclick="downloadImage()">
-                        <i class="fa-solid fa-image me-2"></i> Simpan JPG
+                    <button class="btn btn-primary-gradient py-2 fw-bold shadow-sm" onclick="downloadImage()">
+                        <i class="fa-solid fa-image me-2"></i> SIMPAN JPG (IMAGE)
                     </button>
                 </div>
             </div>
@@ -271,6 +289,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
     // State management
     let items = [];
     
@@ -450,4 +469,30 @@
 
     // Initial Render
     renderReceipt();
+
+    // --- Realtime Clock ---
+    function updateClock() {
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        const timeStr = `${h}:${m}<span style="font-size:0.5em; color: #fff; vertical-align: top; margin-left:5px;">${s}</span>`;
+        const dateStr = now.toLocaleDateString('id-ID', options);
+        
+        const smallClock = document.getElementById('realtimeClock');
+        const bigClock = document.getElementById('bigRealtimeClock');
+        const dateDisp = document.getElementById('currentDate');
+        
+        if(smallClock) smallClock.innerHTML = `${h}:${m} WIB`;
+        if(bigClock) bigClock.innerHTML = timeStr;
+        if(dateDisp) dateDisp.innerText = dateStr;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+});
 </script>
+
+<style>
+.bg-primary-gradient { background: var(--accent-gradient); border: none; }
+</style>

@@ -18,9 +18,7 @@ $current_page = $page ?? 'home';
                 <li class="nav-item">
                     <a class="nav-link <?php echo $current_page == 'barcode' ? 'active' : ''; ?>" href="?page=barcode">Barcode</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link <?php echo $current_page == 'gold' ? 'active' : ''; ?>" href="?page=gold">Emas</a>
-                </li>
+
                 <li class="nav-item">
                     <a class="nav-link <?php echo $current_page == 'treasury' ? 'active' : ''; ?>" href="/herryfiersh/?page=treasury">Treasury</a>
                 </li>
@@ -33,12 +31,11 @@ $current_page = $page ?? 'home';
                 <li class="nav-item">
                     <a class="nav-link <?php echo $current_page == 'struk' ? 'active' : ''; ?>" href="?page=struk">Struk</a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link <?php echo $current_page == 'zakat' ? 'active' : ''; ?>" href="?page=zakat">Zakat</a>
+                    <a class="nav-link <?php echo ($current_page == 'garapan' || $current_page == 'garapan_input') ? 'active' : ''; ?>" href="?page=garapan">Garapan</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link <?php echo $current_page == 'about' ? 'active' : ''; ?>" href="?page=about">About</a>
-                </li>
+
             </ul>
         </div>
     </div>

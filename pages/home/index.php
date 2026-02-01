@@ -1,71 +1,26 @@
 <div class="container animate-fade-in py-5">
     <div class="text-center py-5">
-        <h1 class="display-4 fw-bold mb-3">
+        <h1 class="display-3 fw-bold mb-3">
             <span class="bg-gradient-primary" style="background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                Solusi Finansial Cerdas
+                Solusi Cerdas & Produktif
             </span>
         </h1>
-        <p class="lead text-secondary mx-auto" style="max-width: 700px;">
-            Kelola bisnis, investasi, dan kewajiban sosial Anda dalam satu platform modern yang mudah digunakan, cepat, dan akurat.
+        <p class="lead text-secondary mx-auto" style="max-width: 700px; font-family: 'Inter', sans-serif;">
+            Kelola bisnis, investasi, dan jadwal produktivitas Anda dalam satu platform modern yang cepat, akurat, dan elegan.
         </p>
     </div>
 
-    <div class="row g-4">
+    <div class="row g-4 justify-content-center">
         <!-- Barcode -->
         <div class="col-md-6 col-lg-4">
-            <a href="/herryfiersh/?page=barcode" class="text-decoration-none">
-                <div class="feature-card">
-                    <div class="feature-icon">
+            <a href="?page=barcode" class="text-decoration-none">
+                <div class="feature-card h-100">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);">
                         <i class="fa-solid fa-barcode"></i>
                     </div>
                     <div class="feature-title">Generator Barcode</div>
                     <div class="feature-desc">
-                        Buat barcode produk instant untuk reseller & UMKM Anda. Mendukung berbagai format standar EAN/UPC.
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <!-- Emas -->
-        <div class="col-md-6 col-lg-4">
-            <a href="/herryfiersh/?page=gold" class="text-decoration-none">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-coins"></i>
-                    </div>
-                    <div class="feature-title">Kalkulator Emas</div>
-                    <div class="feature-desc">
-                        Hitung nilai emas hari ini, simulasi buyback, dan potensi keuntungan investasi Anda secara realtime.
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <!-- Struk -->
-        <div class="col-md-6 col-lg-4">
-            <a href="/herryfiersh/?page=struk" class="text-decoration-none">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-receipt"></i>
-                    </div>
-                    <div class="feature-title">Buat Struk</div>
-                    <div class="feature-desc">
-                        Solusi mudah pembuatan struk penjualan digital yang rapi dan profesional untuk toko offline & online.
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <!-- Zakat -->
-        <div class="col-md-6 col-lg-4">
-            <a href="/herryfiersh/?page=zakat" class="text-decoration-none">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-hand-holding-heart"></i>
-                    </div>
-                    <div class="feature-title">Zakat & Pajak</div>
-                    <div class="feature-desc">
-                        Hitung zakat mal, zakat profesi, dan estimasi PPh 21 secara akurat dan sesuai syariat.
+                        Buat barcode produk instant untuk UMKM Anda. Mendukung berbagai format standar industri.
                     </div>
                 </div>
             </a>
@@ -73,14 +28,29 @@
 
         <!-- Treasury -->
         <div class="col-md-6 col-lg-4">
-            <a href="/herryfiersh/?page=treasury" class="text-decoration-none">
-                <div class="feature-card">
-                    <div class="feature-icon">
+            <a href="?page=treasury" class="text-decoration-none">
+                <div class="feature-card h-100">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
                         <i class="fa-solid fa-chart-line"></i>
                     </div>
                     <div class="feature-title">Seputar Treasury</div>
                     <div class="feature-desc">
-                        Pantau harga jual beli treasury & simulasi cuan beli promo realtime untuk memaksimalkan profit.
+                        Pantau harga jual beli emas, simulasi cuan, dan promo realtime untuk profit maksimal.
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Struk -->
+        <div class="col-md-6 col-lg-4">
+            <a href="?page=struk" class="text-decoration-none">
+                <div class="feature-card h-100">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <div class="feature-title">Cetak Struk Digital</div>
+                    <div class="feature-desc">
+                        Pembuatan struk penjualan digital yang rapi dan profesional untuk toko offline & online.
                     </div>
                 </div>
             </a>
@@ -88,14 +58,14 @@
 
         <!-- Saham Indonesia -->
         <div class="col-md-6 col-lg-4">
-            <a href="/herryfiersh/?page=saham" class="text-decoration-none">
-                <div class="feature-card">
-                    <div class="feature-icon">
+            <a href="?page=saham" class="text-decoration-none">
+                <div class="feature-card h-100">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
                         <i class="fa-solid fa-chart-simple"></i>
                     </div>
                     <div class="feature-title">Saham Indonesia</div>
                     <div class="feature-desc">
-                        Pantau pergerakan IHSG, Top Gainers/Losers, dan kalkulator pembelian lot saham secara mudah.
+                        Pantau pergerakan IHSG, Top Gainers/Losers, dan kalkulator investasi saham Anda.
                     </div>
                 </div>
             </a>
@@ -103,29 +73,29 @@
 
         <!-- Crypto -->
         <div class="col-md-6 col-lg-4">
-            <a href="/herryfiersh/?page=crypto" class="text-decoration-none">
-                <div class="feature-card">
-                    <div class="feature-icon">
+            <a href="?page=crypto" class="text-decoration-none">
+                <div class="feature-card h-100">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);">
                         <i class="fa-brands fa-bitcoin"></i>
                     </div>
                     <div class="feature-title">Pasar Crypto</div>
                     <div class="feature-desc">
-                        Pantau harga Bitcoin & Altcoins realtime, Top Gainers, dan kalkulator aset crypto Anda.
+                        Pantau harga Bitcoin & Altcoins realtime serta portofolio aset crypto Anda setiap saat.
                     </div>
                 </div>
             </a>
         </div>
 
-        <!-- About -->
+        <!-- Garapan -->
         <div class="col-md-6 col-lg-4">
-            <a href="/herryfiersh/?page=about" class="text-decoration-none">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-user-astronaut"></i>
+            <a href="?page=garapan" class="text-decoration-none">
+                <div class="feature-card h-100">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);">
+                        <i class="fa-solid fa-list-check"></i>
                     </div>
-                    <div class="feature-title">About Me</div>
+                    <div class="feature-title">Jadwal Garapan</div>
                     <div class="feature-desc">
-                        Mengenal visi HERRYFIERSH TOOLS dalam membantu finansial dan produktivitas Anda sehari-hari.
+                        Kelola jadwal tugas dan projek harian Anda dengan sistem sorting waktu dan riwayat otomatis.
                     </div>
                 </div>
             </a>
