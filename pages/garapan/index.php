@@ -284,25 +284,21 @@ document.addEventListener('DOMContentLoaded', function() {
         border: none !important;
         overflow: visible !important;
     }
-    .mobile-card-table {
-        width: 100% !important;
-        display: block;
+    table thead {
+        display: none !important;
     }
-    #garapanTableBody, #historyTableBody {
-        display: block;
-        width: 100%;
+    table tbody, table tr, table td {
+        display: block !important;
+        width: 100% !important;
     }
     #garapanTableBody tr, #historyTableBody tr {
-        display: block;
-        width: 100% !important;
         background: rgba(255, 255, 255, 0.03);
         margin-bottom: 1rem;
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        padding: 0 !important;
     }
     #garapanTableBody td, #historyTableBody td {
-        display: block;
-        width: 100% !important;
         padding: 1.25rem !important;
         box-sizing: border-box;
     }
