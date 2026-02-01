@@ -27,7 +27,7 @@
 
     <div class="glass-panel p-0 mb-5 overflow-hidden shadow-sm" style="background-color: #13192f; border-radius: 8px; border: 1px solid #1e293b;">
         <div class="table-responsive">
-            <table class="table table-dark table-hover mb-0 align-middle mobile-card-table" style="font-family: 'Inter', sans-serif; background-color: #13192f; --bs-table-bg: #13192f;">
+            <table class="table table-dark table-hover mb-0 align-middle" style="font-family: 'Inter', sans-serif; background-color: #13192f; --bs-table-bg: #13192f;">
                 <thead>
                     <tr class="text-secondary fw-bold small text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px; background-color: #0f1525;">
                         <th class="py-3 ps-4" style="background-color: #0f1525;">DETAIL GARAPAN AKTIF</th>
@@ -49,7 +49,7 @@
 
     <div class="glass-panel p-0 mb-4 overflow-hidden shadow-sm" style="background-color: #0f1525; border-radius: 8px; border: 1px solid #1e293b; opacity: 0.8;">
         <div class="table-responsive">
-            <table class="table table-dark table-hover mb-0 align-middle mobile-card-table" style="font-family: 'Inter', sans-serif; background-color: #0f1525; --bs-table-bg: #0f1525;">
+            <table class="table table-dark table-hover mb-0 align-middle" style="font-family: 'Inter', sans-serif; background-color: #0f1525; --bs-table-bg: #0f1525;">
                 <tbody id="historyTableBody">
                     <!-- Finished items will be injected here -->
                 </tbody>
