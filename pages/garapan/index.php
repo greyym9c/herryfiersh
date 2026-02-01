@@ -273,16 +273,31 @@ document.addEventListener('DOMContentLoaded', function() {
         height: 34px;
         font-size: 0.85rem;
     }
+    .table-responsive {
+        border: none !important;
+        overflow: visible !important;
+    }
+    .mobile-card-table {
+        width: 100% !important;
+        display: block;
+    }
+    #garapanTableBody, #historyTableBody {
+        display: block;
+        width: 100%;
+    }
     #garapanTableBody tr, #historyTableBody tr {
         display: block;
+        width: 100% !important;
         background: rgba(255, 255, 255, 0.03);
         margin-bottom: 1rem;
         border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
     #garapanTableBody td, #historyTableBody td {
         display: block;
+        width: 100% !important;
         padding: 1.25rem !important;
+        box-sizing: border-box;
     }
 }
 </style>
