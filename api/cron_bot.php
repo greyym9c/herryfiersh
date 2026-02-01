@@ -103,14 +103,17 @@ foreach ($garapanData as $item) {
         if (!empty($botConfig['waEnabled']) && !empty($botConfig['waApiKey']) && !empty($botConfig['waRecipient'])) {
             $msg = "🔔 *PENGINGAT GARAPAN* (10 Menit Lagi)\n\n📌 *Projek:* " . $item['nama_garapan'] . 
                    "\n⏰ *Jam:* " . $item['jam'] . " WIB" .
-                   "\n💰 *Promo:* Rp " . ($item['cashback'] ?? '0') . 
-                   "\n📝 *Ket:* " . ($item['keterangan'] ?? '-');
+                       "\n💰 *Promo:* Rp " . ($item['cashback'] ?? '0') . 
+                       "\n📝 *Ket:* " . ($item['keterangan'] ?? '-');
+
+            // Sanitize recipient: remove all non-numeric characters (like +)
+            $recipient = preg_replace('/[^0-9]/', '', $botConfig['waRecipient']);
 
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, "https://api.textmebot.com/send.php");
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-                'recipient' => $botConfig['waRecipient'],
+                'recipient' => $recipient,
                 'apikey' => $botConfig['waApiKey'],
                 'text' => $msg
             ]));
@@ -124,9 +127,9 @@ foreach ($garapanData as $item) {
             $logEntries[] = [
                 'id' => $logKey,
                 'bot' => 'whatsapp',
-                'recipient' => $botConfig['waRecipient'],
+                'recipient' => $recipient,
                 'http_code' => $http_code,
-                'response' => $server_output // TextMeBot might not return JSON
+                'response' => $server_output
             ];
             $sentCount++;
         }
