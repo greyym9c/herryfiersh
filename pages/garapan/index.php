@@ -135,34 +135,30 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         tableBody.innerHTML = data.map(item => `
             <tr class="border-bottom border-light-10">
-                <td class="ps-4 py-3">
-                    <div class="row align-items-center">
-                        <div class="col-12 mb-1">
-                            <div class="d-flex align-items-center gap-2">
+                <td class="ps-4 py-3" colspan="2">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
                                 <span class="fw-bold fs-5 text-white">${item.nama_garapan}</span>
                                 <span class="badge bg-primary-gradient px-2 py-1 small" style="font-size: 0.7rem;">${item.periode}</span>
                                 <span class="text-info small fw-bold"><i class="fa-regular fa-clock me-1"></i>${item.jam}</span>
                             </div>
-                            <div class="mt-1">
+                            <div class="mb-1">
                                 <span class="text-secondary small"><i class="fa-solid fa-calendar-day me-1"></i>${formatDate(item.tgl_mulai)} s/d ${formatDate(item.tgl_selesai)}</span>
                             </div>
+                            <div class="text-secondary small opacity-75" style="line-height: 1.4;">${item.keterangan || 'Tidak ada keterangan'}</div>
                         </div>
-                        <div class="col-12">
-                            <div class="text-secondary small" style="line-height: 1.4; opacity: 0.8;">${item.keterangan || 'Tidak ada keterangan'}</div>
+                        <div class="d-flex gap-2">
+                            <button class="btn-action btn-finish" onclick="finishItem('${item.id}')" title="Selesai">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                            <a href="?page=garapan_input&edit_id=${item.id}" class="btn-action btn-edit" title="Edit">
+                                <i class="fa-solid fa-edit"></i>
+                            </a>
+                            <button class="btn-action btn-delete" onclick="deleteItem('${item.id}')" title="Hapus">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </div>
-                    </div>
-                </td>
-                <td class="text-end pe-4">
-                    <div class="d-flex justify-content-end gap-2">
-                        <button class="btn-action btn-finish" onclick="finishItem('${item.id}')" title="Selesai">
-                            <i class="fa-solid fa-check"></i>
-                        </button>
-                        <a href="?page=garapan_input&edit_id=${item.id}" class="btn-action btn-edit" title="Edit">
-                            <i class="fa-solid fa-edit"></i>
-                        </a>
-                        <button class="btn-action btn-delete" onclick="deleteItem('${item.id}')" title="Hapus">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
                     </div>
                 </td>
             </tr>
@@ -178,19 +174,19 @@ document.addEventListener('DOMContentLoaded', function() {
         emptyHistory.classList.add('d-none');
         historyBody.innerHTML = data.map(item => `
             <tr class="border-bottom border-light-10 opacity-75">
-                <td class="ps-4 py-2">
-                    <div class="d-flex align-items-center gap-3">
-                        <i class="fa-solid fa-circle-check text-success"></i>
-                        <div>
-                            <div class="fw-bold text-white-50 small">${item.nama_garapan}</div>
-                            <div class="text-muted" style="font-size: 0.75rem;">Selesai pada: ${formatDate(item.tgl_selesai)}</div>
+                <td class="ps-4 py-2" colspan="2">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-circle-check text-success"></i>
+                            <div>
+                                <div class="fw-bold text-white-50 small">${item.nama_garapan}</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Selesai pada: ${formatDate(item.tgl_selesai)}</div>
+                            </div>
                         </div>
+                        <button class="btn-action btn-delete" style="width: 32px; height: 32px;" onclick="deleteItem('${item.id}')" title="Hapus Riwayat">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
                     </div>
-                </td>
-                <td class="text-end pe-4">
-                    <button class="btn-action btn-delete" style="width: 32px; height: 32px;" onclick="deleteItem('${item.id}')" title="Hapus Riwayat">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
                 </td>
             </tr>
         `).join('');
@@ -272,24 +268,10 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 @media (max-width: 768px) {
-    #garapanTableBody tr, #historyTableBody tr {
-        display: block;
-        padding: 0.5rem 0;
-    }
-    #garapanTableBody td, #historyTableBody td {
-        display: block;
-        width: 100% !important;
-        padding-left: 1.25rem !important;
-        padding-right: 1.25rem !important;
-        text-align: left !important;
-        border: none !important;
-    }
-    #garapanTableBody .text-end, #historyTableBody .text-end {
-        padding-top: 0 !important;
-        padding-bottom: 1rem !important;
-    }
-    #garapanTableBody .justify-content-end, #historyTableBody .justify-content-end {
-        justify-content: flex-start !important;
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
     }
 }
 </style>
