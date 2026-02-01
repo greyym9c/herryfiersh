@@ -58,17 +58,33 @@ foreach ($garapanData as $item) {
                    "\n💰 *Promo:* Rp " . ($item['cashback'] ?? '0') . 
                    "\n📝 *Ket:* " . ($item['keterangan'] ?? '-');
 
-            $url = "https://api.telegram.org/bot" . $botConfig['teleToken'] . 
-                   "/sendMessage?chat_id=" . $chatId . 
-                   "&text=" . urlencode($msg) . "&parse_mode=Markdown";
+            // Use cURL for better reliability and error capture
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, "https://api.telegram.org/bot" . $botConfig['teleToken'] . "/sendMessage");
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                'chat_id' => $chatId,
+                'text' => $msg,
+                'parse_mode' => 'Markdown'
+            ]));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Fix for some hosting environs
             
-            // Simple GET request
-            file_get_contents($url);
-        }
+            $server_output = curl_exec($ch);
+            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curl_error = curl_error($ch);
+            curl_close($ch);
 
-        // Log success
-        $logEntries[] = $logKey;
-        $sentCount++;
+            // Log result for debug
+            $logEntries[] = [
+                'id' => $logKey,
+                'chat_id' => $chatId,
+                'http_code' => $http_code,
+                'response' => json_decode($server_output, true),
+                'curl_error' => $curl_error
+            ];
+            $sentCount++;
+        }
     }
 }
 
