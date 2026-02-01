@@ -18,6 +18,7 @@ if (!file_exists($configFile)) {
 $garapanData = json_decode(file_get_contents($garapanFile), true);
 $botConfig = json_decode(file_get_contents($configFile), true);
 $botLog = file_exists($logFile) ? json_decode(file_get_contents($logFile), true) : [];
+if (!is_array($botLog)) $botLog = [];
 
 if (empty($botConfig['teleEnabled']) || empty($botConfig['teleToken']) || empty($botConfig['teleChatId'])) {
     echo json_encode(['status' => 'skipped', 'message' => 'Bot disabled or incomplete config']);
@@ -55,10 +56,14 @@ foreach ($garapanData as $item) {
         $logKey = "sent_" . $item['id'];
         
         // Check if already sent today
-        if (in_array($logKey, $logEntries)) continue;
+        $sent_ids = array_column($logEntries, 'id');
+        if (in_array($logKey, $sent_ids)) continue;
 
         // Send Telegram
         $chatIds = array_filter(array_map('trim', explode(',', $botConfig['teleChatId'])));
+        
+        // Debug Log
+        error_log("Sending to IDs: " . implode(", ", $chatIds));
         
         foreach ($chatIds as $chatId) {
             $msg = "🔔 *PENGINGAT GARAPAN* (10 Menit Lagi)\n\n📌 *Projek:* " . $item['nama_garapan'] . 
