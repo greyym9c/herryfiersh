@@ -142,11 +142,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <span class="fw-bold fs-5 text-white">${item.nama_garapan}</span>
                                 <span class="badge bg-primary-gradient px-2 py-1 small" style="font-size: 0.7rem;">${item.periode}</span>
                                 <span class="text-info small fw-bold"><i class="fa-regular fa-clock me-1"></i>${item.jam}</span>
+                                ${item.cashback ? `<span class="badge bg-success text-white px-2 py-1 small pulsate-subtle" style="font-size: 0.7rem; background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-hand-holding-dollar me-1"></i>CB: Rp ${item.cashback}</span>` : ''}
                             </div>
                             <div class="mb-1">
-                                <span class="text-secondary small"><i class="fa-solid fa-calendar-day me-1"></i>${formatDate(item.tgl_mulai)} s/d ${formatDate(item.tgl_selesai)}</span>
+                                <span class="text-white small"><i class="fa-solid fa-calendar-day me-2 text-primary"></i>${formatDate(item.tgl_mulai)} s/d ${formatDate(item.tgl_selesai)}</span>
                             </div>
-                            <div class="text-secondary small opacity-75" style="line-height: 1.4;">${item.keterangan || 'Tidak ada keterangan'}</div>
+                            <div class="text-white small opacity-90" style="line-height: 1.4;">${item.keterangan || 'Tidak ada keterangan'}</div>
                         </div>
                         <div class="d-flex gap-2">
                             <button class="btn-action btn-finish" onclick="finishItem('${item.id}')" title="Selesai">
@@ -179,8 +180,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="d-flex align-items-center gap-3">
                             <i class="fa-solid fa-circle-check text-success"></i>
                             <div>
-                                <div class="fw-bold text-white-50 small">${item.nama_garapan}</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">Selesai pada: ${formatDate(item.tgl_selesai)}</div>
+                                <div class="fw-bold text-white small">${item.nama_garapan}</div>
+                                <div class="text-white-50" style="font-size: 0.75rem;">Selesai: ${formatDate(item.tgl_selesai)} ${item.cashback ? `| CB: Rp ${item.cashback}` : ''}</div>
                             </div>
                         </div>
                         <button class="btn-action btn-delete" style="width: 32px; height: 32px;" onclick="deleteItem('${item.id}')" title="Hapus Riwayat">
@@ -266,6 +267,13 @@ document.addEventListener('DOMContentLoaded', function() {
     color: #ef4444;
     background: rgba(239, 68, 68, 0.1);
 }
+
+@keyframes pulsate-subtle {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.02); opacity: 0.9; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.pulsate-subtle { animation: pulsate-subtle 3s infinite ease-in-out; }
 
 @media (max-width: 768px) {
     .container {

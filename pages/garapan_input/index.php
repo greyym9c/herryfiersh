@@ -55,6 +55,14 @@
                         </div>
                     </div>
                     
+                    <div class="mb-3">
+                        <label class="form-label small text-secondary fw-bold">CASHBACK / DISKON</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark text-secondary border-secondary">Rp</span>
+                            <input type="text" class="form-control bg-dark text-white border-secondary py-2" id="cashback" placeholder="Contoh: 50.000">
+                        </div>
+                    </div>
+                    
                     <div class="mb-4">
                         <label class="form-label small text-secondary fw-bold">KETERANGAN / DETAIL</label>
                         <textarea class="form-control bg-dark text-white border-secondary" id="keterangan" rows="5" placeholder="Masukkan detail atau catatan mengenai garapan ini..."></textarea>
@@ -103,6 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('periode').value = item.periode;
                     document.getElementById('tgl_mulai').value = item.tgl_mulai || '';
                     document.getElementById('tgl_selesai').value = item.tgl_selesai || '';
+                    document.getElementById('cashback').value = item.cashback || '';
                     document.getElementById('keterangan').value = item.keterangan;
                     document.getElementById('formTitle').textContent = 'Edit Data Garapan';
                 }
@@ -120,6 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
             periode: document.getElementById('periode').value,
             tgl_mulai: document.getElementById('tgl_mulai').value,
             tgl_selesai: document.getElementById('tgl_selesai').value,
+            cashback: document.getElementById('cashback').value,
             keterangan: document.getElementById('keterangan').value,
             status: 'active' // Default status
         };
