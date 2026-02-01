@@ -268,6 +268,13 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 @media (max-width: 768px) {
+    .container {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+    .glass-panel {
+        padding: 0.75rem !important;
+    }
     .btn-action {
         width: 34px;
         height: 34px;
