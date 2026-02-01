@@ -216,7 +216,20 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(data => {
                 console.log("Data received:", data);
-                data.sort((a, b) => (a.jam || '').localeCompare(b.jam || ''));
+                
+                // Sort by Jam (Ascending) first, then by Priority (Ascending)
+                data.sort((a, b) => {
+                    const timeA = a.jam || '23:59:59';
+                    const timeB = b.jam || '23:59:59';
+                    const timeDiff = timeA.localeCompare(timeB);
+                    
+                    if (timeDiff !== 0) return timeDiff;
+                    
+                    // If time is same, sort by Priority
+                    const prioA = parseInt(a.prioritas || 3);
+                    const prioB = parseInt(b.prioritas || 3);
+                    return prioA - prioB;
+                });
                 
                 const today = new Date().toISOString().split('T')[0];
                 
@@ -243,7 +256,42 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error("Error loading garapan data:", err);
                 tableBody.innerHTML = '<tr><td colspan="2" class="text-center py-5 text-danger">Gagal memuat data. Periksa koneksi atau file JSON.</td></tr>';
             });
+
     }
+
+    // --- Countdown Timer Logic ---
+    function updateRowTimers() {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+        const currentDay = now.getDate();
+
+        // Iterate over all active items rows to find countdown spans
+        const rows = document.querySelectorAll('.countdown-timer');
+        rows.forEach(span => {
+            const timeTarget = span.getAttribute('data-time');
+            if (!timeTarget) return;
+
+            const [h, m] = timeTarget.split(':').map(Number);
+            const targetDate = new Date(currentYear, currentMonth, currentDay, h, m, 0);
+            
+            // If target time has passed today, assume it is for tomorrow (approx next occurrence)
+            let diff = targetDate - now;
+            
+            if (diff < 0) {
+                 // Add 24 hours (86400000 ms)
+                 diff += 86400000;
+            }
+
+            const hh = Math.floor(diff / 1000 / 60 / 60);
+            const mm = Math.floor((diff / 1000 / 60) % 60);
+            const ss = Math.floor((diff / 1000) % 60);
+            
+            span.innerHTML = `<i class="fa-solid fa-stopwatch me-1"></i> -${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+        });
+    }
+    // Update timers every second
+    setInterval(updateRowTimers, 1000);
 
     function formatDate(dateStr) {
         if (!dateStr) return '-';
@@ -256,15 +304,34 @@ document.addEventListener('DOMContentLoaded', function() {
             tableBody.innerHTML = '<tr><td colspan="2" class="text-center py-5 text-muted">Belum ada jadwal aktif.</td></tr>';
             return;
         }
-        tableBody.innerHTML = data.map(item => `
-            <tr class="border-bottom border-light-10">
-                <td class="ps-4 py-3" colspan="2">
+        tableBody.innerHTML = data.map(item => {
+            // Determine Border Color based on Priority
+            let borderColor = 'border-light-10'; // Default
+            let priorityBadge = '';
+            
+            const prio = parseInt(item.prioritas || 3);
+            if(prio === 1) {
+                borderColor = 'border-danger'; 
+                priorityBadge = '<span class="badge bg-danger text-white ms-2 animate-pulse">URGENT</span>';
+            } else if(prio === 2) {
+                borderColor = 'border-warning';
+                priorityBadge = '<span class="badge bg-warning text-dark ms-2">PENTING</span>';
+            } else if(prio === 3) {
+                borderColor = 'border-success';
+                // priorityBadge = '<span class="badge bg-success text-white ms-2">NORMAL</span>';
+            }
+
+            return `
+            <tr class="border-bottom ${borderColor}" style="border-width: 1px;">
+                <td class="ps-4 py-3" colspan="2" style="${prio === 1 ? 'background: rgba(239, 68, 68, 0.05);' : ''}">
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                         <div class="flex-grow-1">
                             <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
                                 <span class="fw-bold fs-5 text-white">${item.nama_garapan}</span>
+                                ${priorityBadge}
                                 <span class="badge bg-primary-gradient px-2 py-1 small" style="font-size: 0.7rem;">${item.periode}</span>
-                                <span class="text-info small fw-bold"><i class="fa-regular fa-clock me-1"></i>${item.jam}</span>
+                                <span class="text-info fw-bolder mx-2" style="font-size: 1.5rem; text-shadow: 0 0 10px rgba(14, 165, 233, 0.5);"><i class="fa-regular fa-clock me-1"></i>${item.jam}</span>
+                                <span class="countdown-timer badge bg-dark border border-secondary text-warning small user-select-none" data-time="${item.jam}">Loading...</span>
                             </div>
                             <div class="mb-1 d-flex flex-column gap-1">
                                 ${item.cashback ? `<div class=""><span class="badge bg-success text-white px-2 py-1 small pulsate-subtle" style="font-size: 0.7rem; background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-hand-holding-dollar me-1"></i>CB: Rp ${item.cashback}</span></div>` : ''}
@@ -286,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </td>
             </tr>
-        `).join('');
+        `}).join('');
     }
 
     function renderHistory(data) {

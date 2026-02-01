@@ -29,17 +29,27 @@
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label small text-secondary fw-bold">JAM</label>
                             <input type="time" class="form-control bg-dark text-white border-secondary py-2" id="jam" required>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label small text-secondary fw-bold">PERIODE</label>
                             <select class="form-select bg-dark text-white border-secondary py-2" id="periode" required>
                                 <option value="Harian">Harian</option>
                                 <option value="Mingguan">Mingguan</option>
                                 <option value="Bulanan">Bulanan</option>
                                 <option value="Sekali Jalan">Sekali Jalan</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label small text-secondary fw-bold">PRIORITAS</label>
+                            <select class="form-select bg-dark text-white border-secondary py-2" id="prioritas" required>
+                                <option value="1">Level 1 (Urgent/Merah)</option>
+                                <option value="2">Level 2 (Penting/Oranye)</option>
+                                <option value="3" selected>Level 3 (Normal/Hijau)</option>
+                                <option value="4">Level 4 (Santai/Biru)</option>
+                                <option value="5">Level 5 (Low/Abu)</option>
                             </select>
                         </div>
                     </div>
@@ -113,6 +123,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('tgl_selesai').value = item.tgl_selesai || '';
                     document.getElementById('cashback').value = item.cashback || '';
                     document.getElementById('keterangan').value = item.keterangan;
+                    
+                    // Set prioritas, default to 3 if not exists
+                    const prioSelect = document.getElementById('prioritas');
+                    if(prioSelect) prioSelect.value = item.prioritas || '3';
+                    
                     document.getElementById('formTitle').textContent = 'Edit Data Garapan';
                 }
             })
@@ -127,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
             nama_garapan: document.getElementById('nama_garapan').value,
             jam: document.getElementById('jam').value,
             periode: document.getElementById('periode').value,
+            prioritas: document.getElementById('prioritas').value,
             tgl_mulai: document.getElementById('tgl_mulai').value,
             tgl_selesai: document.getElementById('tgl_selesai').value,
             cashback: document.getElementById('cashback').value,

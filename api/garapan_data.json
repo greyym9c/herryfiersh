@@ -8,7 +8,8 @@
         "keterangan": "Beli giftcard 100k x 10 Cashback 50K",
         "tgl_mulai": "2026-02-01",
         "tgl_selesai": "2026-02-24",
-        "status": "active"
+        "status": "active",
+        "prioritas": "3"
     },
     {
         "id": "ag_ovo_memru",
@@ -19,10 +20,11 @@
         "keterangan": "Beli Giftcard 100k x 1 Cashback 5000",
         "tgl_mulai": "2026-02-01",
         "tgl_selesai": "2026-02-24",
-        "status": "active"
+        "status": "active",
+        "prioritas": "3"
     },
     {
-        "id": "shopee_cc",
+        "id": "shopee_cc_1",
         "nama_garapan": "SHOPEE CC",
         "jam": "00:00",
         "periode": "Sekali Jalan",
@@ -30,7 +32,8 @@
         "keterangan": "CC 15JT Diskon 150K",
         "tgl_mulai": "2026-02-02",
         "tgl_selesai": "2026-02-02",
-        "status": "active"
+        "status": "active",
+        "prioritas": "1"
     },
     {
         "id": "qpon_indogold",
@@ -41,7 +44,8 @@
         "keterangan": "Pantau Restokan Qpon Indogold 100k Indogold 50k Indomaret 25k Voucher diskon 8k dari rolet harian Bot jika server on : https://monitorqpon.broriz-dev.workers.dev/",
         "tgl_mulai": "2026-02-01",
         "tgl_selesai": "2026-02-28",
-        "status": "active"
+        "status": "active",
+        "prioritas": "3"
     },
     {
         "id": "klik_indomaret_shopee",
@@ -52,7 +56,8 @@
         "keterangan": "Dapatkan cashback 17.000 dengan minimal transaksi 150.000 (pengguna setia) & cashback 12.000 dengan minimal transaksi 100.000 (khusus pengguna baru)",
         "tgl_mulai": "2026-02-01",
         "tgl_selesai": "2026-02-10",
-        "status": "active"
+        "status": "active",
+        "prioritas": "3"
     },
     {
         "id": "klik_indomaret_gpc",
@@ -63,7 +68,32 @@
         "keterangan": "Beli GPC di aplikasi KlikIndomaret 100K, 1 akun maks 3 CO",
         "tgl_mulai": "2026-01-01",
         "tgl_selesai": "2026-02-28",
-        "status": "active"
+        "status": "active",
+        "prioritas": "3"
+    },
+    {
+        "id": "shopee_treasury_1",
+        "nama_garapan": "Shopee x Treasury",
+        "jam": "00:00",
+        "periode": "Harian",
+        "cashback": "200.000",
+        "keterangan": "Pantau terus perkembangan diskon voucher scrool schopee di treasury official siapa tau akunmu yang giliran dapet diskon gede",
+        "tgl_mulai": "2026-02-01",
+        "tgl_selesai": "2026-02-28",
+        "status": "active",
+        "prioritas": "2"
+    },
+    {
+        "id": "shopee_cc_2",
+        "nama_garapan": "SHOPEE CC",
+        "jam": "08:00",
+        "periode": "Sekali Jalan",
+        "cashback": "150.000",
+        "keterangan": "CC 15JT Diskon 150K",
+        "tgl_mulai": "2026-02-02",
+        "tgl_selesai": "2026-02-02",
+        "status": "active",
+        "prioritas": "1"
     },
     {
         "id": "myim3_ovo",
@@ -74,7 +104,8 @@
         "keterangan": "Beli Pulsa 20K di MyIM3, bayar 21K Cashback 10K",
         "tgl_mulai": "2026-02-01",
         "tgl_selesai": "2026-02-24",
-        "status": "active"
+        "status": "active",
+        "prioritas": "3"
     },
     {
         "id": "myxl_ovo",
@@ -85,7 +116,8 @@
         "keterangan": "Beli Pulsa 50K Cashback 10K",
         "tgl_mulai": "2026-02-01",
         "tgl_selesai": "2026-02-24",
-        "status": "active"
+        "status": "active",
+        "prioritas": "3"
     },
     {
         "id": "ag_shopee",
@@ -96,6 +128,7 @@
         "keterangan": "Beli Giftcard 200K Diskon 26K",
         "tgl_mulai": "2026-02-01",
         "tgl_selesai": "2026-02-24",
-        "status": "active"
+        "status": "active",
+        "prioritas": "3"
     }
 ]
