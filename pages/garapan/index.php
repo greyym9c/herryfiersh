@@ -87,7 +87,6 @@
                     1. Masukkan <b>Chat ID</b> Anda (Wajib).<br>
                     2. Untuk tahu Chat ID, chat ke bot <code>@userinfobot</code> di Telegram.<br>
                     3. Centang "Aktifkan" dan Simpan.
-                    3. Centang "Aktifkan" dan Simpan.
                 </div>
                 
                 <div class="mb-3">
