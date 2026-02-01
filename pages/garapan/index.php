@@ -123,9 +123,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalBadge = document.getElementById('totalGarapan');
     const historyBadge = document.getElementById('totalHistory');
     const emptyHistory = document.getElementById('emptyHistory');
-    const apiPath = '<?php echo $base_url; ?>api/garapan_api.php';
-    const configPath = '<?php echo $base_url; ?>api/save_bot_config.php';
-    const getConfigPath = '<?php echo $base_url; ?>api/get_bot_config.php';
+    // Use relative paths to avoid HTTP/HTTPS mix-ups
+    const apiPath = 'api/garapan_api.php';
+    const configPath = 'api/save_bot_config.php';
+    const getConfigPath = 'api/get_bot_config.php';
     
     let activeData = [];
     const defaultTeleToken = '8114128194:AAH5S2k2kTtigRnjA9zD2YbwN3vA8W3_pjU';
@@ -136,28 +137,59 @@ document.addEventListener('DOMContentLoaded', function() {
         teleEnabled: false
     };
 
-    // Load Config from Server
+    // Load Config from Server with Cache Busting
     function loadBotConfig() {
+        // Disable fields while loading
+        setModalLoading(true);
+
+        const timestamp = new Date().getTime();
         console.log("Fetching bot config...");
-        fetch(getConfigPath)
+        
+        fetch(getConfigPath + '?t=' + timestamp)
             .then(res => res.json())
             .then(data => {
                 console.log("Bot Config loaded:", data);
-                if (data.teleToken) botConfig.teleToken = data.teleToken;
-                if (data.teleChatId) botConfig.teleChatId = data.teleChatId;
+                // Only update if we got valid data
+                if (data.teleToken !== undefined) botConfig.teleToken = data.teleToken;
+                if (data.teleChatId !== undefined) botConfig.teleChatId = data.teleChatId;
                 botConfig.teleEnabled = data.teleEnabled === true || data.teleEnabled === "true";
-
-                // Update UI if modal is open (or pre-fill for later)
-                const tokenInput = document.getElementById('teleBotToken');
-                const chatInput = document.getElementById('teleChatId');
-                const enabledInput = document.getElementById('teleBotEnabled');
-
-                if (tokenInput) tokenInput.value = botConfig.teleToken;
-                if (chatInput) chatInput.value = botConfig.teleChatId;
-                if (enabledInput) enabledInput.checked = botConfig.teleEnabled;
+                
+                updateModalUI();
             })
-            .catch(err => console.error("Error loading bot config:", err));
+            .catch(err => {
+                console.error("Error loading bot config:", err);
+                // If error, do NOT overwrite with defaults immediately to be safe
+                // But we must re-enable UI
+            })
+            .finally(() => {
+                setModalLoading(false);
+            });
     }
+
+    function setModalLoading(isLoading) {
+        const tokenInput = document.getElementById('teleBotToken');
+        const chatInput = document.getElementById('teleChatId');
+        const saveBtn = document.getElementById('saveBotConfig');
+        
+        if (tokenInput) tokenInput.disabled = isLoading;
+        if (chatInput) {
+            chatInput.disabled = isLoading;
+            chatInput.placeholder = isLoading ? "Sedang memuat data..." : "Contoh: 123456, 987654";
+        }
+        if (saveBtn) saveBtn.disabled = isLoading;
+    }
+
+    function updateModalUI() {
+        const tokenInput = document.getElementById('teleBotToken');
+        const chatInput = document.getElementById('teleChatId');
+        const enabledInput = document.getElementById('teleBotEnabled');
+
+        if (tokenInput && botConfig.teleToken) tokenInput.value = botConfig.teleToken;
+        if (chatInput && botConfig.teleChatId) chatInput.value = botConfig.teleChatId;
+        if (enabledInput) enabledInput.checked = botConfig.teleEnabled;
+    }
+
+    // Load on start
     loadBotConfig();
 
     function updateClock() {
@@ -177,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function loadData() {
         console.log("Fetching from:", apiPath);
-        fetch(apiPath)
+        fetch(apiPath + '?t=' + new Date().getTime())
             .then(res => {
                 if (!res.ok) throw new Error('Network response was not ok');
                 return res.json();
