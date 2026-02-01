@@ -88,7 +88,6 @@
                     2. Untuk tahu Chat ID, chat ke bot <code>@userinfobot</code> di Telegram.<br>
                     3. Centang "Aktifkan" dan Simpan.
                     3. Centang "Aktifkan" dan Simpan.
-                    <button type="button" class="btn btn-sm btn-outline-info ms-2" id="refreshBotConfig" title="Reload Config"><i class="fa-solid fa-sync"></i> Refresh Data</button>
                 </div>
                 
                 <div class="mb-3">
@@ -433,16 +432,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Modal Handling
     const saveBtn = document.getElementById('saveBotConfig');
     const triggerBtn = document.getElementById('trigger-bot-modal');
-    const refreshBtn = document.getElementById('refreshBotConfig');
 
     if (triggerBtn) {
         triggerBtn.addEventListener('click', () => {
-            loadBotConfig();
-        });
-    }
-
-    if (refreshBtn) {
-        refreshBtn.addEventListener('click', () => {
             loadBotConfig();
         });
     }
