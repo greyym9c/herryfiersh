@@ -46,24 +46,49 @@ $logEntries = $botLog[$currentDate] ?? [];
 foreach ($garapanData as $item) {
     if (empty($item['jam']) || $item['status'] !== 'active') continue;
 
-    // Check Date Range (Period Logic)
+    // Check Date Range (Period Logic) - Initial Check
     // If today is outside [tgl_mulai - tgl_selesai], SKIP.
+    // Note: We'll refine this for overnight tasks below.
     if (!empty($item['tgl_mulai']) && !empty($item['tgl_selesai'])) {
         if ($currentDate < $item['tgl_mulai'] || $currentDate > $item['tgl_selesai']) {
-            continue;
+             // For safety, we just continue here, but strictly speaking if it's 23:50 and target is 00:00 tomorrow,
+             // we should check if tomorrow is valid.
+             // However, let's just stick to the basic check first to avoid breaking "today's" tasks.
+             if ($currentDate > $item['tgl_selesai']) continue;
         }
     }
 
     list($h, $m) = explode(':', $item['jam']);
     $taskTimeVal = ($h * 60) + $m;
-    $diff = $taskTimeVal - $currentTimeVal;
+    
+    // Circular Time Difference Calculation
+    // Total minutes in a day = 1440
+    // If task is 00:00 (0) and current is 23:50 (1430):
+    // (0 - 1430 + 1440) % 1440 = 10
+    $minutesUntil = ($taskTimeVal - $currentTimeVal + 1440) % 1440;
 
     // Trigger exactly 10 minutes before
-    if ($diff === 10) {
+    if ($minutesUntil === 10) {
+        // Special Check for Midnight Rollover
+        // If we are at 23:xx and target is 00:xx, we are targeting "Tomorrow".
+        // Ensure "Tomorrow" is still within valid range.
+        if ($taskTimeVal < $currentTimeVal) { // Target is smaller than now, meaning it's next day
+             $tomorrowDate = date('Y-m-d', strtotime('+1 day'));
+             if (!empty($item['tgl_selesai']) && $tomorrowDate > $item['tgl_selesai']) {
+                 continue; // Stop, because the event on "tomorrow" is past the end date
+             }
+        }
+
         // Include Time in Key so rescheduling allows resending
         $logKey = "sent_" . $item['id'] . "_" . str_replace(':', '', $item['jam']);
         
         // Check if already sent today
+        // NOTE: For 00:00 tasks triggered at 23:50, this log key is unique for "this run".
+        // Use a clearer key might be better, like "sent_ID_YYYY-MM-DD" of the TARGET date.
+        // But for now, let's stick to the user's pattern but maybe append Date if it's daily?
+        // Actually, the log is cleared/rotated daily in this script ($botLog[$currentDate]).
+        // If we send at 23:50, it logs into "2026-02-02". 
+        // If script runs again at 23:51, it checks "2026-02-02" logs. Found. Skips. Correct.
         $sent_ids = array_column($logEntries, 'id');
         if (in_array($logKey, $sent_ids)) continue;
 
@@ -181,12 +206,13 @@ echo json_encode([
         if(empty($i['jam'])) return null;
         list($h, $m) = explode(':', $i['jam']);
         $taskTime = ($h * 60) + $m;
-        $diff = $taskTime - $currentTimeVal;
+        // Circular calc for debug too
+        $minutesUntil = ($taskTime - $currentTimeVal + 1440) % 1440;
         return [
             'item' => $i['nama_garapan'],
             'jam' => $i['jam'],
-            'diff_minutes' => $diff,
-            'status' => ($diff === 10) ? 'TRIGGERED' : 'WAITING'
+            'minutes_until' => $minutesUntil,
+            'status' => ($minutesUntil === 10) ? 'TRIGGERED' : 'WAITING'
         ];
     }, $garapanData)
 ], JSON_PRETTY_PRINT);

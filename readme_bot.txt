@@ -9,7 +9,7 @@ LANGKAH 1: IZINKAN BOT MENGIRIM PESAN (WAJIB!)
 ----------------------------------------------
 Karena bot ini bukan milik Anda, Anda harus memberinya izin dulu.
 1. Buka aplikasi Telegram.
-2. Cari nama bot ini: **@HerryFiershBot** (Ganti sesuai nama bot asli yang dipakai).
+2. Cari nama bot ini: **@notifikasigarapanot**.
    *Jika tidak tahu nama botnya, tanya ke pemilik/admin.*
 3. Klik tombol **START** / **MULAI**.
    *Jika tidak klik Start, pesan tidak akan pernah masuk.*
@@ -24,7 +24,7 @@ Bot perlu tahu "alamat" Telegram Anda.
 
 LANGKAH 3: MASUKKAN KE WEBSITE
 ------------------------------
-1. Buka menu "Garapan" di website.
+1. Buka https://herryfiersh-production-6194.up.railway.app/herryfiersh/?page=garapan di website.
 2. Klik tombol "Set Bot Telegram".
 3. **Kolom TOKEN**: JANGAN DIUBAH (Biarkan apa adanya, itu kode mesin botnya).
 4. **Kolom CHAT ID**: Masukkan Angka ID Anda tadi (dari Langkah 2).
