@@ -60,7 +60,8 @@ foreach ($garapanData as $item) {
 
     // Trigger exactly 10 minutes before
     if ($diff === 10) {
-        $logKey = "sent_" . $item['id'];
+        // Include Time in Key so rescheduling allows resending
+        $logKey = "sent_" . $item['id'] . "_" . str_replace(':', '', $item['jam']);
         
         // Check if already sent today
         $sent_ids = array_column($logEntries, 'id');
