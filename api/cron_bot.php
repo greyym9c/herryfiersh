@@ -112,32 +112,39 @@ foreach ($garapanData as $item) {
                        "\n💰 *Promo:* Rp " . ($item['cashback'] ?? '0') . 
                        "\n📝 *Ket:* " . ($item['keterangan'] ?? '-');
 
-            // Sanitize recipient: remove all non-numeric characters (like +)
-            $recipient = preg_replace('/[^0-9]/', '', $botConfig['waRecipient']);
+            // Support Multiple Recipients (Comma Separated)
+            $recipients = array_filter(array_map('trim', explode(',', $botConfig['waRecipient'])));
 
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "https://api.textmebot.com/send.php");
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-                'recipient' => $recipient,
-                'apikey' => $botConfig['waApiKey'],
-                'text' => $msg
-            ]));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            
-            $server_output = curl_exec($ch);
-            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
+            foreach ($recipients as $number) {
+                 // Sanitize recipient: remove all non-numeric characters (like +)
+                $recipient = preg_replace('/[^0-9]/', '', $number);
+                
+                if (empty($recipient)) continue;
 
-            $logEntries[] = [
-                'id' => $logKey,
-                'bot' => 'whatsapp',
-                'recipient' => $recipient,
-                'http_code' => $http_code,
-                'response' => $server_output
-            ];
-            $sentCount++;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, "https://api.textmebot.com/send.php");
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                    'recipient' => $recipient,
+                    'apikey' => $botConfig['waApiKey'],
+                    'text' => $msg
+                ]));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                
+                $server_output = curl_exec($ch);
+                $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+
+                $logEntries[] = [
+                    'id' => $logKey,
+                    'bot' => 'whatsapp',
+                    'recipient' => $recipient,
+                    'http_code' => $http_code,
+                    'response' => $server_output
+                ];
+                $sentCount++;
+            }
         }
     }
 }

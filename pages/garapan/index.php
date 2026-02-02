@@ -128,7 +128,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label small text-secondary fw-bold">NOMOR WA (PENERIMA)</label>
-                            <input type="text" id="waRecipient" class="form-control bg-dark text-white border-secondary" placeholder="Format: 628123XXX">
+                            <input type="text" id="waRecipient" class="form-control bg-dark text-white border-secondary" placeholder="Format: 628123XXX, 628567XXX (Pisah Koma)">
                         </div>
                         <div class="form-check form-switch p-0 ms-4">
                             <input class="form-check-input" type="checkbox" id="waEnabled" style="cursor: pointer;">
@@ -621,11 +621,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const text = `🔔 *PENGINGAT GARAPAN* (10 Menit Lagi)\n\n📌 *Projek:* ${item.nama_garapan}\n⏰ *Jam:* ${item.jam} WIB\n💰 *Promo:* Rp ${item.cashback || '0'}\n📝 *Ket:* ${item.keterangan || '-'}`;
         
-        const url = `https://api.textmebot.com/send.php?recipient=${botConfig.waRecipient}&apikey=${botConfig.waApiKey}&text=${encodeURIComponent(text)}`;
+        // Support Multiple Recipients (Comma Separated)
+        const recipients = botConfig.waRecipient.split(',').map(num => num.trim()).filter(num => num);
 
-        fetch(url, { mode: 'no-cors' }) // textmebot might have cors issues, no-cors still sends but can't read response
-            .then(() => console.log('WhatsApp Request Sent (no-cors)'))
-            .catch(err => console.error('WhatsApp Error:', err));
+        recipients.forEach(number => {
+            const cleanNumber = number.replace(/[^0-9]/g, '');
+            if(!cleanNumber) return;
+
+            const url = `https://api.textmebot.com/send.php?recipient=${cleanNumber}&apikey=${botConfig.waApiKey}&text=${encodeURIComponent(text)}`;
+
+            fetch(url, { mode: 'no-cors' }) // textmebot might have cors issues, no-cors still sends but can't read response
+                .then(() => console.log(`WhatsApp Request Sent to ${cleanNumber} (no-cors)`))
+                .catch(err => console.error(`WhatsApp Error (${cleanNumber}):`, err));
+        });
     }
 
     function sendTelegram(item) {
