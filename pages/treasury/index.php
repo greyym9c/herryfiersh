@@ -24,7 +24,7 @@
     <div class="glass-panel p-0 mb-4 overflow-hidden shadow-sm" style="background-color: #13192f; border-radius: 8px; border: 1px solid #1e293b;">
         <div class="p-3 border-bottom border-secondary d-flex justify-content-between align-items-center" style="background-color: #13192f;">
             <h5 class="fw-bold mb-0 text-white">Riwayat Transaksi (Update Per Menit)</h5>
-            <small class="text-secondary" style="font-size: 0.75rem;">Data from diiniindulu.up.railway.app</small>
+            <small class="text-secondary" style="font-size: 0.75rem;"><a href="https://www.menujuramadhan.my.id" target="_blank" class="text-secondary text-decoration-underline">List Harga Sekarang</a></small>
         </div>
         <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
             <table class="table table-dark table-hover mb-0 align-middle text-center mobile-card-table" style="font-family: 'Inter', sans-serif; background-color: #13192f; --bs-table-bg: #13192f;">
@@ -155,7 +155,7 @@
 
 <script>
     // System Config
-    const WS_URL = 'wss://diiniindulu.up.railway.app/ws';
+    const WS_URL = 'wss://www.menujuramadhan.my.id/ws';
     let socket;
     let reconnectTimer = null;
     let hasReceivedWSData = false;
