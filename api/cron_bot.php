@@ -136,12 +136,21 @@ foreach ($garapanData as $item) {
                 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
 
+                // Handle 411 Disconnected
+                if ($http_code === 411) {
+                    $server_output = json_encode([
+                        'error' => true,
+                        'message' => 'WhatsApp Terputus (Disconnected). Silakan scan QR ulang di textmebot.com',
+                        'raw' => strip_tags($server_output) // Clean HTML tags
+                    ]);
+                }
+
                 $logEntries[] = [
                     'id' => $logKey,
                     'bot' => 'whatsapp',
                     'recipient' => $recipient,
                     'http_code' => $http_code,
-                    'response' => $server_output
+                    'response' => ($http_code === 200) ? $server_output : json_decode($server_output)
                 ];
                 $sentCount++;
 
