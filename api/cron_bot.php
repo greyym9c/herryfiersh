@@ -144,6 +144,9 @@ foreach ($garapanData as $item) {
                     'response' => $server_output
                 ];
                 $sentCount++;
+
+                // Anti-Ban Delay: TextMeBot requires 5s delay minimum
+                sleep(8);
             }
         }
     }

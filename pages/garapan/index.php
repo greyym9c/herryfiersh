@@ -624,15 +624,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Support Multiple Recipients (Comma Separated)
         const recipients = botConfig.waRecipient.split(',').map(num => num.trim()).filter(num => num);
 
-        recipients.forEach(number => {
+        recipients.forEach((number, index) => {
             const cleanNumber = number.replace(/[^0-9]/g, '');
             if(!cleanNumber) return;
 
             const url = `https://api.textmebot.com/send.php?recipient=${cleanNumber}&apikey=${botConfig.waApiKey}&text=${encodeURIComponent(text)}`;
 
-            fetch(url, { mode: 'no-cors' }) // textmebot might have cors issues, no-cors still sends but can't read response
-                .then(() => console.log(`WhatsApp Request Sent to ${cleanNumber} (no-cors)`))
-                .catch(err => console.error(`WhatsApp Error (${cleanNumber}):`, err));
+            // Anti-Ban Delay: 8 seconds per message
+            setTimeout(() => {
+                fetch(url, { mode: 'no-cors' }) // textmebot might have cors issues, no-cors still sends but can't read response
+                    .then(() => console.log(`WhatsApp Request Sent to ${cleanNumber} (no-cors)`))
+                    .catch(err => console.error(`WhatsApp Error (${cleanNumber}):`, err));
+            }, index * 8000);
         });
     }
 
