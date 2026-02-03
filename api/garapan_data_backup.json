@@ -1,42 +1,6 @@
 [
     {
-        "id": "myxl_x_ovo",
-        "nama_garapan": "MyXL X OVO",
-        "jam": "10:00",
-        "periode": "Harian",
-        "cashback": "10.000",
-        "keterangan": "Beli Pulsa 50K Cashback 10K",
-        "tgl_mulai": "2026-02-01",
-        "tgl_selesai": "2026-02-24",
-        "status": "active",
-        "prioritas": "3"
-    },
-    {
-        "id": "ag_x_shopee",
-        "nama_garapan": "AG X Shopee",
-        "jam": "10:00",
-        "periode": "Harian",
-        "cashback": "26.000",
-        "keterangan": "Beli Giftcard 200K Diskon 26K",
-        "tgl_mulai": "2026-02-01",
-        "tgl_selesai": "2026-02-24",
-        "status": "active",
-        "prioritas": "3"
-    },
-    {
-        "id": "shopee_x_treasury",
-        "nama_garapan": "Shopee x Treasury",
-        "jam": "00:00",
-        "periode": "Harian",
-        "cashback": "200.000",
-        "keterangan": "Pantau terus perkembangan diskon voucher scrool schopee di treasury official siapa tau akunmu yang giliran dapet diskon gede",
-        "tgl_mulai": "2026-02-01",
-        "tgl_selesai": "2026-02-28",
-        "status": "active",
-        "prioritas": "2"
-    },
-    {
-        "id": "ag_x_ovo",
+        "id": "ag_ovo_1",
         "nama_garapan": "AG X OVO",
         "jam": "00:00",
         "periode": "Harian",
@@ -48,7 +12,7 @@
         "prioritas": "3"
     },
     {
-        "id": "ag_x_ovo_memru",
+        "id": "ag_ovo_memru",
         "nama_garapan": "AG X OVO (Memru)",
         "jam": "00:00",
         "periode": "Harian",
@@ -60,19 +24,31 @@
         "prioritas": "3"
     },
     {
-        "id": "qpon_x_indogold",
+        "id": "shopee_cc_1",
+        "nama_garapan": "SHOPEE CC",
+        "jam": "00:00",
+        "periode": "Sekali Jalan",
+        "cashback": "150.000",
+        "keterangan": "CC 15JT Diskon 150K",
+        "tgl_mulai": "2026-02-02",
+        "tgl_selesai": "2026-02-02",
+        "status": "finished",
+        "prioritas": "1"
+    },
+    {
+        "id": "qpon_indogold",
         "nama_garapan": "QPON x Indogold",
         "jam": "00:00",
         "periode": "Harian",
         "cashback": "8.000",
-        "keterangan": "Pantau Restokan Qpon Indogold 100k Indogold 50k Indomaret 25k Voucher diskon 8k dari rolet harian Bot jika server on : https://monitorqpon.broriz-dev.workers.dev/",
+        "keterangan": "Pantau Restokan Qpon Indogold 100k Indogold 50k Indomaret 25k Voucher diskon 8k dari rolet harian Bot jika server on : https:\/\/monitorqpon.broriz-dev.workers.dev\/",
         "tgl_mulai": "2026-02-01",
         "tgl_selesai": "2026-02-28",
         "status": "active",
         "prioritas": "3"
     },
     {
-        "id": "klik_indomaret_x_shopee",
+        "id": "klik_indomaret_shopee",
         "nama_garapan": "Klik Indomaret x Shopee",
         "jam": "00:00",
         "periode": "Harian",
@@ -84,7 +60,7 @@
         "prioritas": "3"
     },
     {
-        "id": "klik_indomaret_x_gpc",
+        "id": "klik_indomaret_gpc",
         "nama_garapan": "Klik Indomaret X GPC",
         "jam": "00:00",
         "periode": "Harian",
@@ -96,24 +72,60 @@
         "prioritas": "3"
     },
     {
-        "id": "ag_x_ovo_15k",
-        "nama_garapan": "AG X OVO (15K)",
+        "id": "shopee_treasury_1",
+        "nama_garapan": "Shopee x Treasury",
         "jam": "00:00",
         "periode": "Harian",
-        "cashback": "15.000",
-        "keterangan": "Beli kuota tsel bodong 371k cashback 15k / Beli giftcard 300k cashback 15k",
+        "cashback": "200.000",
+        "keterangan": "Pantau terus perkembangan diskon voucher scrool schopee di treasury official siapa tau akunmu yang giliran dapet diskon gede",
+        "tgl_mulai": "2026-02-01",
+        "tgl_selesai": "2026-02-28",
+        "status": "active",
+        "prioritas": "2"
+    },
+    {
+        "id": "shopee_cc_2",
+        "nama_garapan": "SHOPEE CC",
+        "jam": "08:00",
+        "periode": "Sekali Jalan",
+        "cashback": "150.000",
+        "keterangan": "CC 15JT Diskon 150K",
+        "tgl_mulai": "2026-02-02",
+        "tgl_selesai": "2026-02-02",
+        "status": "finished",
+        "prioritas": "1"
+    },
+    {
+        "id": "myim3_ovo",
+        "nama_garapan": "MyIM3 X OVO",
+        "jam": "09:00",
+        "periode": "Harian",
+        "cashback": "10.000",
+        "keterangan": "Beli Pulsa 20K di MyIM3, bayar 21K Cashback 10K",
         "tgl_mulai": "2026-02-01",
         "tgl_selesai": "2026-02-24",
         "status": "active",
         "prioritas": "3"
     },
     {
-        "id": "myim3_x_ovo",
-        "nama_garapan": "MyIM3 X OVO",
-        "jam": "09:00",
+        "id": "myxl_ovo",
+        "nama_garapan": "MyXL X OVO",
+        "jam": "10:00",
         "periode": "Harian",
         "cashback": "10.000",
-        "keterangan": "Beli Pulsa 20K di MyIM3, bayar 21K Cashback 10K",
+        "keterangan": "Beli Pulsa 50K Cashback 10K",
+        "tgl_mulai": "2026-02-01",
+        "tgl_selesai": "2026-02-24",
+        "status": "active",
+        "prioritas": "3"
+    },
+    {
+        "id": "ag_shopee",
+        "nama_garapan": "AG X Shopee",
+        "jam": "10:00",
+        "periode": "Harian",
+        "cashback": "26.000",
+        "keterangan": "Beli Giftcard 200K Diskon 26K",
         "tgl_mulai": "2026-02-01",
         "tgl_selesai": "2026-02-24",
         "status": "active",

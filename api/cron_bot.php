@@ -142,8 +142,8 @@ foreach ($garapanData as $item) {
             $recipients = array_filter(array_map('trim', explode(',', $botConfig['waRecipient'])));
 
             foreach ($recipients as $number) {
-                 // Sanitize recipient: remove all non-numeric characters (like +)
-                $recipient = preg_replace('/[^0-9]/', '', $number);
+                 // Sanitize recipient: Allow Alphanumeric + @ . - _ for Group/LID IDs
+                $recipient = preg_replace('/[^a-zA-Z0-9@._-]/', '', $number);
                 
                 if (empty($recipient)) continue;
 
