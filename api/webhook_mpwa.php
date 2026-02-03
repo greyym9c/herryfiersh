@@ -17,15 +17,27 @@ $botConfig = json_decode(file_get_contents($configFile), true);
 $garapanData = json_decode(file_get_contents($garapanFile), true);
 
 // 2. Receive Webhook Data
+// 2. Logging & Input Handling
 $input = file_get_contents('php://input');
-$data = json_decode($input, true);
+file_put_contents($logFile, date('Y-m-d H:i:s') . " - Method: " . $_SERVER['REQUEST_METHOD'] . " - Input: " . $input . "\n", FILE_APPEND);
 
-// Logging for debugging (append to file)
-file_put_contents($logFile, date('Y-m-d H:i:s') . " - Received: " . $input . "\n", FILE_APPEND);
-
-if (!$data) {
-    echo json_encode(['status' => 'ignored', 'message' => 'No data']);
+// Handle GET requests (Browser checks)
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    echo json_encode(['status' => 'active', 'message' => 'Webhook is ready. Please set this URL in your MPWA dashboard.']);
     exit;
+}
+
+// Parse Data (JSON or POST)
+$data = json_decode($input, true);
+if (!$data) {
+    // Try fallback to standard POST data if JSON failed
+    if (!empty($_POST)) {
+        $data = $_POST;
+        file_put_contents($logFile, date('Y-m-d H:i:s') . " - Fallback to _POST: " . json_encode($_POST) . "\n", FILE_APPEND);
+    } else {
+        echo json_encode(['status' => 'ignored', 'message' => 'No data received. Make sure MPWA is sending a POST request.']);
+        exit;
+    }
 }
 
 // 3. Extract Message Details
