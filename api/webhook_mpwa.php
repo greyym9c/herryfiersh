@@ -117,7 +117,12 @@ if (strpos(strtolower($message), '/add') === 0) {
 
 // Helper Function to Send Reply (Same as cron logic)
 function replyMessage($msg, $config) {
-    if (empty($config['mpwaApiKey']) || empty($config['mpwaBaseUrl'])) return;
+    global $logFile; // Access global log file
+
+    if (empty($config['mpwaApiKey']) || empty($config['mpwaBaseUrl'])) {
+        file_put_contents($logFile, date('Y-m-d H:i:s') . " - Error: Missing API Key or URL in config\n", FILE_APPEND);
+        return;
+    }
     
     $payload = [
         'api_key' => $config['mpwaApiKey'],
@@ -133,7 +138,12 @@ function replyMessage($msg, $config) {
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_exec($ch);
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
     curl_close($ch);
+
+    // Log the result
+    file_put_contents($logFile, date('Y-m-d H:i:s') . " - Reply Sent. Code: $httpCode. Response: $response. Error: $error\n", FILE_APPEND);
 }
 ?>
