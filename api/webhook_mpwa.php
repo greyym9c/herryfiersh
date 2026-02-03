@@ -19,24 +19,32 @@ $garapanData = json_decode(file_get_contents($garapanFile), true);
 // 2. Receive Webhook Data
 // 2. Logging & Input Handling
 $input = file_get_contents('php://input');
-file_put_contents($logFile, date('Y-m-d H:i:s') . " - Method: " . $_SERVER['REQUEST_METHOD'] . " - Input: " . $input . "\n", FILE_APPEND);
+// Capture ALL incoming data (GET/POST/COOKIE) for thorough debugging
+$allData = [
+    'method' => $_SERVER['REQUEST_METHOD'],
+    'input_stream' => $input,
+    'post_data' => $_POST,
+    'get_data' => $_GET,
+    'request_data' => $_REQUEST
+];
+file_put_contents($logFile, date('Y-m-d H:i:s') . " - FULL DEBUG: " . json_encode($allData) . "\n", FILE_APPEND);
 
-// Handle GET requests (Browser checks)
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+// Handle GET requests (Browser checks) - Only exit if NO data is present
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && empty($_GET)) {
     echo json_encode(['status' => 'active', 'message' => 'Webhook is ready. Please set this URL in your MPWA dashboard.']);
     exit;
 }
 
-// Parse Data (JSON or POST)
+// Parse Data (JSON or POST or GET)
 $data = json_decode($input, true);
 if (!$data) {
-    // Try fallback to standard POST data if JSON failed
     if (!empty($_POST)) {
         $data = $_POST;
-        file_put_contents($logFile, date('Y-m-d H:i:s') . " - Fallback to _POST: " . json_encode($_POST) . "\n", FILE_APPEND);
+    } elseif (!empty($_GET)) {
+        // Fallback for GET Webhooks
+        $data = $_GET;
     } else {
-        echo json_encode(['status' => 'ignored', 'message' => 'No data received. Make sure MPWA is sending a POST request.']);
-        exit;
+         // Proceed but log warning
     }
 }
 
