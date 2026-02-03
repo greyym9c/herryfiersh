@@ -58,6 +58,8 @@ if (empty($message) && isset($data['message']['extendedTextMessage']['text'])) {
 $allowedGroup = $botConfig['waRecipient'] ?? '';
 
 if (trim($sender) !== trim($allowedGroup)) {
+    // Log why we rejected it
+    file_put_contents($logFile, date('Y-m-d H:i:s') . " - IGNORED: Sender '$sender' does not match allowed '$allowedGroup'\n", FILE_APPEND);
     echo json_encode(['status' => 'ignored', 'message' => 'Invalid group/sender', 'got' => $sender, 'expected' => $allowedGroup]);
     exit;
 }
@@ -66,6 +68,8 @@ if (trim($sender) !== trim($allowedGroup)) {
 // Command format: /add Nama Garapan | Jam | Keterangan
 // Example: /add MyTask | 10:00 | Cashback 10k
 if (strpos(strtolower($message), '/add') === 0) {
+    file_put_contents($logFile, date('Y-m-d H:i:s') . " - COMMAND DETECTED: $message\n", FILE_APPEND);
+    
     $rawContent = trim(substr($message, 4)); // Remove '/add'
     $parts = explode('|', $rawContent);
     $parts = array_map('trim', $parts);
