@@ -4,5 +4,7 @@
     "teleEnabled": true,
     "waApiKey": "54zuQku4c5to",
     "waRecipient": "120363405072231013@g.us",
-    "waEnabled": true
+    "waEnabled": true,
+    "mpwaApiKey": "a3if3ZM44LOvrMAe4cqzdlkb6a1CXQ",
+    "mpwaBaseUrl": "https://app.mpwa.net/api"
 }

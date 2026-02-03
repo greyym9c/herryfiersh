@@ -124,30 +124,42 @@ if (!empty($triggeredItems)) {
         }
     }
 
-    // Send WhatsApp
-    if (!empty($botConfig['waEnabled']) && !empty($botConfig['waApiKey']) && !empty($botConfig['waRecipient'])) {
+    // Send WhatsApp (MPWA)
+    if (!empty($botConfig['waEnabled']) && !empty($botConfig['mpwaApiKey']) && !empty($botConfig['waRecipient'])) {
         $recipients = array_filter(array_map('trim', explode(',', $botConfig['waRecipient'])));
         
         foreach ($recipients as $number) {
-            $recipient = preg_replace('/[^a-zA-Z0-9@._-]/', '', $number);
-            if (empty($recipient)) continue;
+            // Filter number (ensure it ends with @g.us for groups or proper format)
+            // MPWA might require purely numeric number if not group, or specific format. 
+            // The config has "120363405072231013@g.us" which is a group JID.
+            
+            $payload = [
+                'api_key' => $botConfig['mpwaApiKey'],
+                'sender' => $botConfig['mpwaSender'] ?? '628123456789', // Default sender if needed, or remove if not required by specific endpoint
+                'number' => $number,
+                'message' => $msg
+            ];
+            
+            // Adjust payload if using a different endpoint style (e.g. /send-message)
+            // Common MPWA / generic WA gateway payloads often allow 'number'/'to' and 'message'/'text'.
+            // Let's try a standard payload that works with many:
+            // If the user said "app.mpwa.net" typically it uses:
+            // { "apikey": "...", "number": "...", "message": "..." } or similar query params.
+            // Let's try POST to /send-message.
 
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "https://api.textmebot.com/send.php");
+            curl_setopt($ch, CURLOPT_URL, ($botConfig['mpwaBaseUrl'] ?? "https://app.mpwa.net/api") . "/send-message");
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-                'recipient' => $recipient,
-                'apikey' => $botConfig['waApiKey'],
-                'text' => $msg
-            ]));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             $server_output = curl_exec($ch);
             $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
             
-             // Sleep for rate limit if multiple recipients (though now typically 1 group)
-            sleep(5);
+            // Sleep for rate limit
+            sleep(2);
         }
     }
 
