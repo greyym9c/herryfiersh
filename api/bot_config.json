@@ -6,5 +6,6 @@
     "waRecipient": "120363405072231013@g.us",
     "waEnabled": true,
     "mpwaApiKey": "a3if3ZM44LOvrMAe4cqzdlkb6a1CXQ",
-    "mpwaBaseUrl": "https://app.mpwa.net/api"
+    "mpwaBaseUrl": "https://app.mpwa.net",
+    "mpwaSender": "087775785980"
 }

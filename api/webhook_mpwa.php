@@ -126,12 +126,13 @@ function replyMessage($msg, $config) {
     
     $payload = [
         'api_key' => $config['mpwaApiKey'],
-        'sender' => $config['mpwaSender'] ?? '628123456789', 
-        'number' => $config['waRecipient'], // Reply to group
+        'sender' => $config['mpwaSender'] ?? '628123456789', // Recipient of the API (User's Sender Number)
+        'number' => $config['waRecipient'], // The group to reply to
         'message' => $msg
     ];
 
     $ch = curl_init();
+    // Correct Endpoint: https://app.mpwa.net/send-message
     curl_setopt($ch, CURLOPT_URL, ($config['mpwaBaseUrl']) . "/send-message");
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));

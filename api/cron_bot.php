@@ -135,20 +135,14 @@ if (!empty($triggeredItems)) {
             
             $payload = [
                 'api_key' => $botConfig['mpwaApiKey'],
-                'sender' => $botConfig['mpwaSender'] ?? '628123456789', // Default sender if needed, or remove if not required by specific endpoint
+                'sender' => $botConfig['mpwaSender'] ?? '628123456789', // Sender Number
                 'number' => $number,
                 'message' => $msg
             ];
             
-            // Adjust payload if using a different endpoint style (e.g. /send-message)
-            // Common MPWA / generic WA gateway payloads often allow 'number'/'to' and 'message'/'text'.
-            // Let's try a standard payload that works with many:
-            // If the user said "app.mpwa.net" typically it uses:
-            // { "apikey": "...", "number": "...", "message": "..." } or similar query params.
-            // Let's try POST to /send-message.
-
+            // Correct Endpoint: https://app.mpwa.net/send-message
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, ($botConfig['mpwaBaseUrl'] ?? "https://app.mpwa.net/api") . "/send-message");
+            curl_setopt($ch, CURLOPT_URL, ($botConfig['mpwaBaseUrl'] ?? "https://app.mpwa.net") . "/send-message");
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
