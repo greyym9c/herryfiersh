@@ -120,15 +120,19 @@
                     <!-- WhatsApp Panel -->
                     <div class="tab-pane fade" id="wa-panel" role="tabpanel">
                         <div class="alert alert-success py-2 small mb-3" style="background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2); color: #94a3b8;">
-                            <i class="fa-brands fa-whatsapp me-2 text-success"></i><b>WhatsApp:</b> Menggunakan <b>TextMeBot</b>. Dapatkan API Key di <a href="https://www.textmebot.com/" target="_blank" class="text-success text-decoration-none fw-bold">textmebot.com</a>.
+                            <i class="fa-brands fa-whatsapp me-2 text-success"></i><b>WhatsApp (MPWA):</b> Pastikan device terhubung di Dashboard MPWA.
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small text-secondary fw-bold">TEXTMEBOT API KEY</label>
-                            <input type="text" id="waApiKey" class="form-control bg-dark text-white border-secondary" placeholder="Contoh: a1b2c3d4e5f6">
+                            <label class="form-label small text-secondary fw-bold">MPWA API KEY</label>
+                            <input type="text" id="mpwaApiKey" class="form-control bg-dark text-white border-secondary" placeholder="Contoh: a1b2c3d4...">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small text-secondary fw-bold">NOMOR WA (PENERIMA)</label>
-                            <input type="text" id="waRecipient" class="form-control bg-dark text-white border-secondary" placeholder="Format: 628123XXX, 628567XXX (Pisah Koma)">
+                            <label class="form-label small text-secondary fw-bold">NOMOR PENGIRIM (SENDER)</label>
+                            <input type="text" id="mpwaSender" class="form-control bg-dark text-white border-secondary" placeholder="Contoh: 628777...">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-secondary fw-bold">GROUP ID (PENERIMA)</label>
+                            <input type="text" id="waRecipient" class="form-control bg-dark text-white border-secondary" placeholder="Contoh: 120363...@g.us">
                         </div>
                         <div class="form-check form-switch p-0 ms-4">
                             <input class="form-check-input" type="checkbox" id="waEnabled" style="cursor: pointer;">
@@ -166,7 +170,8 @@ document.addEventListener('DOMContentLoaded', function() {
         teleToken: defaultTeleToken,
         teleChatId: '',
         teleEnabled: false,
-        waApiKey: '',
+        mpwaApiKey: '',
+        mpwaSender: '',
         waRecipient: '',
         waEnabled: false
     };
@@ -188,7 +193,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.teleChatId !== undefined) botConfig.teleChatId = data.teleChatId;
                 botConfig.teleEnabled = data.teleEnabled === true || data.teleEnabled === "true";
                 
-                if (data.waApiKey !== undefined) botConfig.waApiKey = data.waApiKey;
+                if (data.mpwaApiKey !== undefined) botConfig.mpwaApiKey = data.mpwaApiKey;
+                if (data.mpwaSender !== undefined) botConfig.mpwaSender = data.mpwaSender;
                 if (data.waRecipient !== undefined) botConfig.waRecipient = data.waRecipient;
                 botConfig.waEnabled = data.waEnabled === true || data.waEnabled === "true";
                 
@@ -207,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function setModalLoading(isLoading) {
         const inputs = [
             'teleBotToken', 'teleChatId', 'teleBotEnabled',
-            'waApiKey', 'waRecipient', 'waEnabled',
+            'mpwaApiKey', 'mpwaSender', 'waRecipient', 'waEnabled',
             'saveBotConfig'
         ];
         
@@ -225,7 +231,11 @@ document.addEventListener('DOMContentLoaded', function() {
             'teleBotToken': botConfig.teleToken,
             'teleChatId': botConfig.teleChatId,
             'teleBotEnabled': botConfig.teleEnabled,
-            'waApiKey': botConfig.waApiKey,
+            'teleBotToken': botConfig.teleToken,
+            'teleChatId': botConfig.teleChatId,
+            'teleBotEnabled': botConfig.teleEnabled,
+            'mpwaApiKey': botConfig.mpwaApiKey,
+            'mpwaSender': botConfig.mpwaSender,
             'waRecipient': botConfig.waRecipient,
             'waEnabled': botConfig.waEnabled
         };
@@ -596,7 +606,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 // WhatsApp Logic
-                if (botConfig.waEnabled && botConfig.waApiKey && botConfig.waRecipient) {
+                if (botConfig.waEnabled && botConfig.mpwaApiKey && botConfig.waRecipient) {
                     const waKeyStore = `wa_sent_${item.id}_${currentDay}`;
                     if (!localStorage.getItem(waKeyStore)) {
                         sendWhatsApp(item);
@@ -621,22 +631,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const text = `🔔 *PENGINGAT GARAPAN* (10 Menit Lagi)\n\n📌 *Projek:* ${item.nama_garapan}\n⏰ *Jam:* ${item.jam} WIB\n💰 *Promo:* Rp ${item.cashback || '0'}\n📝 *Ket:* ${item.keterangan || '-'}`;
         
-        // Support Multiple Recipients (Comma Separated)
-        const recipients = botConfig.waRecipient.split(',').map(num => num.trim()).filter(num => num);
-
-        recipients.forEach((number, index) => {
-            const cleanNumber = number.replace(/[^0-9]/g, '');
-            if(!cleanNumber) return;
-
-            const url = `https://api.textmebot.com/send.php?recipient=${cleanNumber}&apikey=${botConfig.waApiKey}&text=${encodeURIComponent(text)}`;
-
-            // Anti-Ban Delay: 8 seconds per message
-            setTimeout(() => {
-                fetch(url, { mode: 'no-cors' }) // textmebot might have cors issues, no-cors still sends but can't read response
-                    .then(() => console.log(`WhatsApp Request Sent to ${cleanNumber} (no-cors)`))
-                    .catch(err => console.error(`WhatsApp Error (${cleanNumber}):`, err));
-            }, index * 8000);
-        });
+        // Client-side sending disabled for MPWA to avoid CORS / Key exposure.
+        // The Server (Cron Job) handles the actual sending.
+        console.log("Visual WA Notification for:", item.nama_garapan);
     }
 
     function sendTelegram(item) {
@@ -685,7 +682,8 @@ document.addEventListener('DOMContentLoaded', function() {
             teleToken: document.getElementById('teleBotToken').value.trim(),
             teleChatId: document.getElementById('teleChatId').value.trim(),
             teleEnabled: document.getElementById('teleBotEnabled').checked,
-            waApiKey: document.getElementById('waApiKey').value.trim(),
+            mpwaApiKey: document.getElementById('mpwaApiKey').value.trim(),
+            mpwaSender: document.getElementById('mpwaSender').value.trim(),
             waRecipient: document.getElementById('waRecipient').value.trim(),
             waEnabled: document.getElementById('waEnabled').checked
         };
@@ -695,7 +693,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        if (newConfig.waEnabled && (!newConfig.waApiKey || !newConfig.waRecipient)) {
+        if (newConfig.waEnabled && (!newConfig.mpwaApiKey || !newConfig.waRecipient)) {
             alert('API Key & Nomor WhatsApp wajib diisi jika diaktifkan!');
             return;
         }

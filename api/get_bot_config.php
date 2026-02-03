@@ -12,7 +12,8 @@ if (file_exists($configFile)) {
         'teleToken' => '',
         'teleChatId' => '',
         'teleEnabled' => false,
-        'waApiKey' => '',
+        'mpwaApiKey' => '',
+        'mpwaSender' => '',
         'waRecipient' => '',
         'waEnabled' => false
     ]);
