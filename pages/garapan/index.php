@@ -47,6 +47,28 @@
         </div>
     </div>
 
+    <!-- Upcoming List -->
+    <div class="d-flex justify-content-between align-items-center mb-4 mt-5">
+        <h3 class="h5 mb-0 text-white opacity-90"><i class="fa-solid fa-hourglass-start me-2 text-info"></i>Garapan Belum Berjalan</h3>
+        <span class="badge bg-info opacity-10" id="totalUpcoming" style="background: rgba(14, 165, 233, 0.2) !important; color: #0ea5e9;">0 Item</span>
+    </div>
+
+    <div class="glass-panel p-0 mb-5 overflow-hidden shadow-sm" style="background-color: #0f1525; border-radius: 8px; border: 1px solid #1e293b; opacity: 0.9;">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0 align-middle" style="font-family: 'Inter', sans-serif; background-color: #0f1525; --bs-table-bg: #0f1525;">
+                <thead>
+                    <tr class="text-secondary fw-bold small text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px; background-color: #0f1525;">
+                        <th class="py-3 ps-4" style="background-color: #0f1525;">DETAIL GARAPAN MENDATANG</th>
+                        <th class="py-3 text-end pe-4" style="width: 120px; background-color: #0f1525;">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody id="upcomingTableBody">
+                    <tr><td colspan="2" class="text-center py-5 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i> Memuat Data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- History List -->
     <div class="d-flex justify-content-between align-items-center mb-4 mt-5">
         <h3 class="h5 mb-0 text-white opacity-75"><i class="fa-solid fa-clock-rotate-left me-2 text-secondary"></i>History Selesai</h3>
@@ -292,6 +314,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Sort Active data by countdown
                 active = sortActiveData(active);
 
+                // Upcoming: Not finished AND tgl_mulai > today
+                let upcoming = data.filter(i => 
+                    i.status !== 'finished' && 
+                    (i.tgl_mulai && i.tgl_mulai > today)
+                );
+
                 // Auto-finish Sekali Jalan items on load
                 active.forEach(item => {
                     if (item.periode === 'Sekali Jalan' && item.diff < 0) {
@@ -306,10 +334,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 );
                 
                 renderActive(active);
+                renderUpcoming(upcoming);
                 renderHistory(finished);
                 
                 activeData = active; // Store for reminders and sorting
                 totalBadge.textContent = active.length;
+                document.getElementById('totalUpcoming').textContent = `${upcoming.length} Item`;
                 historyBadge.textContent = `${finished.length} Item`;
             })
             .catch(err => {
@@ -496,6 +526,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 </td>
             </tr>
         `}).join('');
+    }
+
+    function renderUpcoming(data) {
+        const upcomingBody = document.getElementById('upcomingTableBody');
+        if (data.length === 0) {
+            upcomingBody.innerHTML = '<tr><td colspan="2" class="text-center py-5 text-muted">Tidak ada garapan mendatang.</td></tr>';
+            return;
+        }
+        upcomingBody.innerHTML = data.map(item => `
+            <tr class="border-bottom border-light-10">
+                <td class="ps-4 py-3">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-bold text-white">${item.nama_garapan}</span>
+                            <span class="badge bg-secondary small text-info opacity-75">MENUNGGU</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 text-secondary small">
+                            <span><i class="fa-regular fa-calendar me-2"></i>Mulai: <span class="text-info">${formatDate(item.tgl_mulai)}</span></span>
+                            <span><i class="fa-regular fa-clock me-2"></i>${item.jam} WIB</span>
+                        </div>
+                        <div class="text-white opacity-50 small">${item.keterangan || '-'}</div>
+                    </div>
+                </td>
+                <td class="pe-4 py-3 text-end">
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="?page=garapan_input&edit_id=${item.id}" class="btn-action btn-edit" title="Edit">
+                            <i class="fa-solid fa-edit"></i>
+                        </a>
+                        <button class="btn-action btn-delete" onclick="deleteItem('${item.id}')" title="Hapus">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
     }
 
     function renderHistory(data) {
