@@ -1,0 +1,15 @@
+Debug Start: 2026-02-08 07:02:29
+Token: o7RofHHPHdm9Fa4Xa8gR
+
+Target: 120363405072231013@g.us
+Error: 
+Response: {"reason":"invalid group id","requestid":373642658,"status":false}
+--------------------------------
+Target: 120363405072231013
+Error: 
+Response: {"reason":"target input invalid","requestid":373642691,"status":false,"target":"120363405072231013"}
+--------------------------------
+Target: 087775785980
+Error: 
+Response: {"detail":"success! message in queue","id":[142651139],"process":"pending","quota":{"087775785980":{"details":"deduced from total quota","quota":999,"remaining":998,"used":1}},"requestid":373642736,"status":true,"target":["6287775785980"]}
+--------------------------------
