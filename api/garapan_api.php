@@ -54,7 +54,7 @@ switch ($method) {
             if (file_exists($configFile)) {
                 $botConfig = json_decode(file_get_contents($configFile), true);
                 
-                if (!empty($botConfig['waEnabled']) && !empty($botConfig['mpwaApiKey']) && !empty($botConfig['waRecipient'])) {
+                if (!empty($botConfig['waEnabled']) && !empty($botConfig['fonnteToken']) && !empty($botConfig['waRecipient'])) {
                     $newItem = $input;
                     $msg = "✅ *GARAPAN BARU DITAMBAHKAN*\n\n";
                     $msg .= "📌 *" . ($newItem['nama_garapan'] ?? 'Tanpa Nama') . "*\n";
@@ -63,21 +63,20 @@ switch ($method) {
                     $msg .= "📝 Ket: " . ($newItem['keterangan'] ?? '-') . "\n\n";
                     $msg .= "_Ditambahkan via Web_";
 
-                    $payload = [
-                        'api_key' => $botConfig['mpwaApiKey'],
-                        'sender' => $botConfig['mpwaSender'] ?? '',
-                        'number' => $botConfig['waRecipient'],
-                        'message' => $msg
-                    ];
-
-                    // Send Async (Fire and Forget) or simple sync curl with low timeout
+                    // Send Fonnte
                     $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, ($botConfig['mpwaBaseUrl'] ?? "https://app.mpwa.net") . "/send-message");
+                    curl_setopt($ch, CURLOPT_URL, "https://api.fonnte.com/send");
                     curl_setopt($ch, CURLOPT_POST, 1);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, [
+                        'target' => $botConfig['waRecipient'],
+                        'message' => $msg
+                    ]);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                        'Authorization: ' . $botConfig['fonnteToken']
+                    ]);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_TIMEOUT, 2); // Fast timeout so user doesn't wait
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 2); // Fast timeout
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                     curl_exec($ch);
                     curl_close($ch);
                 }

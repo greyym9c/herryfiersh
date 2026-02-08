@@ -15,8 +15,7 @@ $data = [
     'teleToken' => $input['teleToken'] ?? '',
     'teleChatId' => $input['teleChatId'] ?? '',
     'teleEnabled' => $input['teleEnabled'] ?? false,
-    'mpwaApiKey' => $input['mpwaApiKey'] ?? '',
-    'mpwaSender' => $input['mpwaSender'] ?? '',
+    'fonnteToken' => $input['fonnteToken'] ?? '',
     'waRecipient' => $input['waRecipient'] ?? '', // Group ID
     'waEnabled' => $input['waEnabled'] ?? false
 ];

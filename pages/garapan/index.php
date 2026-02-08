@@ -120,15 +120,11 @@
                     <!-- WhatsApp Panel -->
                     <div class="tab-pane fade" id="wa-panel" role="tabpanel">
                         <div class="alert alert-success py-2 small mb-3" style="background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2); color: #94a3b8;">
-                            <i class="fa-brands fa-whatsapp me-2 text-success"></i><b>WhatsApp (MPWA):</b> Pastikan device terhubung di Dashboard MPWA.
+                            <i class="fa-brands fa-whatsapp me-2 text-success"></i><b>WhatsApp (Fonnte):</b> Pastikan device terhubung di Dashboard Fonnte.
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small text-secondary fw-bold">MPWA API KEY</label>
-                            <input type="text" id="mpwaApiKey" class="form-control bg-dark text-white border-secondary" placeholder="Contoh: a1b2c3d4...">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small text-secondary fw-bold">NOMOR PENGIRIM (SENDER)</label>
-                            <input type="text" id="mpwaSender" class="form-control bg-dark text-white border-secondary" placeholder="Contoh: 628777...">
+                            <label class="form-label small text-secondary fw-bold">FONNTE TOKEN</label>
+                            <input type="text" id="fonnteToken" class="form-control bg-dark text-white border-secondary" placeholder="Masukkan Token Fonnte...">
                         </div>
                         <div class="mb-3">
                             <label class="form-label small text-secondary fw-bold">GROUP ID (PENERIMA)</label>
@@ -170,8 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
         teleToken: defaultTeleToken,
         teleChatId: '',
         teleEnabled: false,
-        mpwaApiKey: '',
-        mpwaSender: '',
+        fonnteToken: '',
         waRecipient: '',
         waEnabled: false
     };
@@ -193,8 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.teleChatId !== undefined) botConfig.teleChatId = data.teleChatId;
                 botConfig.teleEnabled = data.teleEnabled === true || data.teleEnabled === "true";
                 
-                if (data.mpwaApiKey !== undefined) botConfig.mpwaApiKey = data.mpwaApiKey;
-                if (data.mpwaSender !== undefined) botConfig.mpwaSender = data.mpwaSender;
+                if (data.fonnteToken !== undefined) botConfig.fonnteToken = data.fonnteToken;
                 if (data.waRecipient !== undefined) botConfig.waRecipient = data.waRecipient;
                 botConfig.waEnabled = data.waEnabled === true || data.waEnabled === "true";
                 
@@ -213,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function setModalLoading(isLoading) {
         const inputs = [
             'teleBotToken', 'teleChatId', 'teleBotEnabled',
-            'mpwaApiKey', 'mpwaSender', 'waRecipient', 'waEnabled',
+            'fonnteToken', 'waRecipient', 'waEnabled',
             'saveBotConfig'
         ];
         
@@ -231,11 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'teleBotToken': botConfig.teleToken,
             'teleChatId': botConfig.teleChatId,
             'teleBotEnabled': botConfig.teleEnabled,
-            'teleBotToken': botConfig.teleToken,
-            'teleChatId': botConfig.teleChatId,
-            'teleBotEnabled': botConfig.teleEnabled,
-            'mpwaApiKey': botConfig.mpwaApiKey,
-            'mpwaSender': botConfig.mpwaSender,
+            'fonnteToken': botConfig.fonnteToken,
             'waRecipient': botConfig.waRecipient,
             'waEnabled': botConfig.waEnabled
         };
@@ -606,7 +596,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 // WhatsApp Logic
-                if (botConfig.waEnabled && botConfig.mpwaApiKey && botConfig.waRecipient) {
+                if (botConfig.waEnabled && botConfig.fonnteToken && botConfig.waRecipient) {
                     const waKeyStore = `wa_sent_${item.id}_${currentDay}`;
                     if (!localStorage.getItem(waKeyStore)) {
                         sendWhatsApp(item);
@@ -682,8 +672,7 @@ document.addEventListener('DOMContentLoaded', function() {
             teleToken: document.getElementById('teleBotToken').value.trim(),
             teleChatId: document.getElementById('teleChatId').value.trim(),
             teleEnabled: document.getElementById('teleBotEnabled').checked,
-            mpwaApiKey: document.getElementById('mpwaApiKey').value.trim(),
-            mpwaSender: document.getElementById('mpwaSender').value.trim(),
+            fonnteToken: document.getElementById('fonnteToken').value.trim(),
             waRecipient: document.getElementById('waRecipient').value.trim(),
             waEnabled: document.getElementById('waEnabled').checked
         };
@@ -693,8 +682,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        if (newConfig.waEnabled && (!newConfig.mpwaApiKey || !newConfig.waRecipient)) {
-            alert('API Key & Nomor WhatsApp wajib diisi jika diaktifkan!');
+        if (newConfig.waEnabled && (!newConfig.fonnteToken || !newConfig.waRecipient)) {
+            alert('Token Fonnte & Group ID wajib diisi jika diaktifkan!');
             return;
         }
         
