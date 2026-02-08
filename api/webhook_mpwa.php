@@ -16,65 +16,57 @@ if (!file_exists($configFile) || !file_exists($garapanFile)) {
 $botConfig = json_decode(file_get_contents($configFile), true);
 $garapanData = json_decode(file_get_contents($garapanFile), true);
 
-// 2. Receive Webhook Data
-// 2. Logging & Input Handling
+// 2. Receive Webhook Data (Fonnte)
+// Fonnte sends data via POST
 $input = file_get_contents('php://input');
-// Capture ALL incoming data (GET/POST/COOKIE) for thorough debugging
-$allData = [
-    'method' => $_SERVER['REQUEST_METHOD'],
-    'input_stream' => $input,
-    'post_data' => $_POST,
-    'get_data' => $_GET,
-    'request_data' => $_REQUEST
-];
-file_put_contents($logFile, date('Y-m-d H:i:s') . " - FULL DEBUG: " . json_encode($allData) . "\n", FILE_APPEND);
-
-// Handle GET requests (Browser checks) - Only exit if NO data is present
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && empty($_GET)) {
-    echo json_encode(['status' => 'active', 'message' => 'Webhook is ready. Please set this URL in your MPWA dashboard.']);
-    exit;
-}
-
-// Parse Data (JSON or POST or GET)
 $data = json_decode($input, true);
-if (!$data) {
-    if (!empty($_POST)) {
-        $data = $_POST;
-    } elseif (!empty($_GET)) {
-        // Fallback for GET Webhooks
-        $data = $_GET;
-    } else {
-         // Proceed but log warning
-    }
+
+// Fallback to $_POST if JSON decode fails or input is empty (Fonnte often uses Form Data)
+if (!$data && !empty($_POST)) {
+    $data = $_POST;
 }
 
-// 3. Extract Message Details
-// MPWA structure variation support. 
-// Assuming checking for 'message', 'text', 'body' or 'conversation'
-// And 'remote_jid', 'chat_id' or 'from'
-$sender = $data['remote_jid'] ?? $data['chat_id'] ?? $data['from'] ?? '';
-$message = $data['message']['conversation'] ?? $data['text'] ?? $data['body'] ?? '';
+// Log Incoming Data
+file_put_contents($logFile, date('Y-m-d H:i:s') . " - INCOMING: " . json_encode($data) . "\n", FILE_APPEND);
 
-// Support for extended text messages (replies etc) if structure is complex
-if (empty($message) && isset($data['message']['extendedTextMessage']['text'])) {
-    $message = $data['message']['extendedTextMessage']['text'];
-}
+// 3. Extract Message Details (Fonnte Structure)
+// Fonnte Payload: sender, message, name, group (optional)
+$sender = $data['sender'] ?? '';
+$message = $data['message'] ?? '';
+$group = $data['group'] ?? ''; // Group ID or Name
+// Note: Fonnte 'group' field usually contains the Group Name or ID. 
+// If it's a private chat, 'group' might be empty.
 
-// 4. Validate Group/Sender
-// User wants to add garapan "via chat wa di grub dengan id grub yang sama"
-// So we must verify the sender is the configured Group ID
+// 4. Validate Group
+// User wants to allow adding task ONLY from the specific group.
 $allowedGroup = $botConfig['waRecipient'] ?? '';
 
-if (trim($sender) !== trim($allowedGroup)) {
-    // Log why we rejected it
-    file_put_contents($logFile, date('Y-m-d H:i:s') . " - IGNORED: Sender '$sender' does not match allowed '$allowedGroup'\n", FILE_APPEND);
-    echo json_encode(['status' => 'ignored', 'message' => 'Invalid group/sender', 'got' => $sender, 'expected' => $allowedGroup]);
+// Check if the message is from the allowed group.
+// Fonnte might send the Group ID in 'group' field.
+// If valid group, we proceed. We trust 'group' field matches 'waRecipient' OR 'sender' matches (if private testing).
+// However, user specifically said "id grub juga sama", so we expect 'group' to match 'waRecipient'.
+$isValidGroup = false;
+
+if (!empty($group)) {
+    // Check if the incoming group ID matches the allowed group ID
+    // Note: strict comparison might fail if Fonnte formatting differs (e.g. suffixes). 
+    // We'll try loose check or exact match.
+    if (trim($group) === trim($allowedGroup)) {
+        $isValidGroup = true;
+    }
+} else {
+    // Direct message? Maybe allow for testing if sender matches allowed (unlikely for group ID)
+}
+
+if (!$isValidGroup) {
+    file_put_contents($logFile, date('Y-m-d H:i:s') . " - IGNORED: Group '$group' does not match allowed '$allowedGroup'\n", FILE_APPEND);
+    // Don't exit abruptly, just return success to Fonnte so it stops retrying, but don't process.
+    echo json_encode(['status' => 'ignored', 'message' => 'Invalid group']);
     exit;
 }
 
 // 5. Parse Command
 // Command format: /add Nama Garapan | Jam | Keterangan
-// Example: /add MyTask | 10:00 | Cashback 10k
 if (strpos(strtolower($message), '/add') === 0) {
     file_put_contents($logFile, date('Y-m-d H:i:s') . " - COMMAND DETECTED: $message\n", FILE_APPEND);
     
@@ -89,7 +81,7 @@ if (strpos(strtolower($message), '/add') === 0) {
         
         // Basic Validation
         if (empty($name)) {
-             replyMessage("Nama garapan tidak boleh kosong.\nFormat: /add Nama | Jam | Keterangan", $botConfig);
+             replyMessage("monitor: Nama garapan tidak boleh kosong.\nFormat: /add Nama | Jam | Keterangan", $botConfig, $group); // Reply to group
              exit;
         }
 
@@ -98,11 +90,11 @@ if (strpos(strtolower($message), '/add') === 0) {
             "id" => uniqid('wa_'),
             "nama_garapan" => $name,
             "jam" => $time,
-            "periode" => "Harian", // Defaulting to Harian for now
-            "cashback" => "0", // Default
+            "periode" => "Harian", 
+            "cashback" => "0",
             "keterangan" => $desc,
             "tgl_mulai" => date('Y-m-d'),
-            "tgl_selesai" => "2030-12-31", // Long term default
+            "tgl_selesai" => "2030-12-31",
             "status" => "active",
             "prioritas" => "3"
         ];
@@ -115,48 +107,54 @@ if (strpos(strtolower($message), '/add') === 0) {
             $reply .= "Nama: $name\n";
             $reply .= "Jam: $time\n";
             $reply .= "Ket: $desc";
-            replyMessage($reply, $botConfig);
+            replyMessage($reply, $botConfig, $group); // Reply to group
         } else {
-            replyMessage("❌ Gagal menyimpan data.", $botConfig);
+            replyMessage("❌ Gagal menyimpan data.", $botConfig, $group);
         }
 
     } else {
-        replyMessage("⚠ Format salah.\nGunakan: /add Nama | Jam | Keterangan", $botConfig);
+        replyMessage("⚠ Format salah.\nGunakan: /add Nama | Jam | Keterangan", $botConfig, $group);
     }
 } else {
     echo json_encode(['status' => 'active', 'message' => 'Not a command']);
 }
 
-// Helper Function to Send Reply (Same as cron logic)
-function replyMessage($msg, $config) {
-    global $logFile; // Access global log file
+// Helper Function to Send Reply (Fonnte)
+function replyMessage($msg, $config, $target) {
+    global $logFile;
 
-    if (empty($config['mpwaApiKey']) || empty($config['mpwaBaseUrl'])) {
-        file_put_contents($logFile, date('Y-m-d H:i:s') . " - Error: Missing API Key or URL in config\n", FILE_APPEND);
+    if (empty($config['fonnteToken'])) {
+        file_put_contents($logFile, date('Y-m-d H:i:s') . " - Error: Missing Fonnte Token\n", FILE_APPEND);
         return;
     }
     
-    $payload = [
-        'api_key' => $config['mpwaApiKey'],
-        'sender' => $config['mpwaSender'] ?? '628123456789', // Recipient of the API (User's Sender Number)
-        'number' => $config['waRecipient'], // The group to reply to
-        'message' => $msg
-    ];
+    // Fonnte Send API
+    $curl = curl_init();
 
-    $ch = curl_init();
-    // Correct Endpoint: https://app.mpwa.net/send-message
-    curl_setopt($ch, CURLOPT_URL, ($config['mpwaBaseUrl']) . "/send-message");
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $error = curl_error($ch);
-    curl_close($ch);
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => 'https://api.fonnte.com/send',
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_ENCODING => '',
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 0,
+      CURLOPT_FOLLOWLOCATION => true,
+      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+      CURLOPT_CUSTOMREQUEST => 'POST',
+      CURLOPT_POSTFIELDS => array(
+        'target' => $target, // Reply to the group (or sender)
+        'message' => $msg,
+      ),
+      CURLOPT_HTTPHEADER => array(
+        'Authorization: ' . $config['fonnteToken']
+      ),
+      CURLOPT_SSL_VERIFYPEER => false
+    ));
 
-    // Log the result
+    $response = curl_exec($curl);
+    $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    $error = curl_error($curl);
+    curl_close($curl);
+
     file_put_contents($logFile, date('Y-m-d H:i:s') . " - Reply Sent. Code: $httpCode. Response: $response. Error: $error\n", FILE_APPEND);
 }
 ?>

@@ -124,35 +124,38 @@ if (!empty($triggeredItems)) {
         }
     }
 
-    // Send WhatsApp (MPWA)
-    if (!empty($botConfig['waEnabled']) && !empty($botConfig['mpwaApiKey']) && !empty($botConfig['waRecipient'])) {
+    // Send WhatsApp (Fonnte)
+    if (!empty($botConfig['waEnabled']) && !empty($botConfig['fonnteToken']) && !empty($botConfig['waRecipient'])) {
         $recipients = array_filter(array_map('trim', explode(',', $botConfig['waRecipient'])));
         
         foreach ($recipients as $number) {
-            // Filter number (ensure it ends with @g.us for groups or proper format)
-            // MPWA might require purely numeric number if not group, or specific format. 
-            // The config has "120363405072231013@g.us" which is a group JID.
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+              CURLOPT_URL => 'https://api.fonnte.com/send',
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => '',
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 0,
+              CURLOPT_FOLLOWLOCATION => true,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => 'POST',
+              CURLOPT_POSTFIELDS => array(
+                'target' => $number,
+                'message' => $msg,
+              ),
+              CURLOPT_HTTPHEADER => array(
+                'Authorization: ' . $botConfig['fonnteToken']
+              ),
+              CURLOPT_SSL_VERIFYPEER => false // Disable SSL verification for local dev if needed
+            ));
+
+            $response = curl_exec($curl);
+            $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            $error = curl_error($curl);
+            curl_close($curl);
             
-            $payload = [
-                'api_key' => $botConfig['mpwaApiKey'],
-                'sender' => $botConfig['mpwaSender'] ?? '628123456789', // Sender Number
-                'number' => $number,
-                'message' => $msg
-            ];
-            
-            // Correct Endpoint: https://app.mpwa.net/send-message
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, ($botConfig['mpwaBaseUrl'] ?? "https://app.mpwa.net") . "/send-message");
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            $server_output = curl_exec($ch);
-            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-            
-            // Sleep for rate limit
+            // Sleep for rate limit (Fonnte is robust but good practice)
             sleep(2);
         }
     }
