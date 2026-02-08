@@ -217,6 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (data.fonnteToken !== undefined) botConfig.fonnteToken = data.fonnteToken;
                 if (data.waRecipient !== undefined) botConfig.waRecipient = data.waRecipient;
+                if (data.waMembers !== undefined) botConfig.waMembers = data.waMembers;
                 botConfig.waEnabled = data.waEnabled === true || data.waEnabled === "true";
                 
                 updateModalUI();
@@ -254,7 +255,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'teleBotEnabled': botConfig.teleEnabled,
             'fonnteToken': botConfig.fonnteToken,
             'waRecipient': botConfig.waRecipient,
-            'waEnabled': botConfig.waEnabled
+            'waEnabled': botConfig.waEnabled,
+            'waMembers': botConfig.waMembers
         };
 
         for (const [id, val] of Object.entries(mapping)) {
@@ -745,20 +747,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function loadBotConfig() {
-        fetch(configPath)
-            .then(res => res.json())
-            .then(config => {
-                botConfig = config; // Update global config
-                document.getElementById('teleBotToken').value = config.teleToken || '';
-                document.getElementById('teleChatId').value = config.teleChatId || '';
-                document.getElementById('teleBotEnabled').checked = config.teleEnabled || false;
-                document.getElementById('waEnabled').checked = config.waEnabled || false;
-                document.getElementById('fonnteToken').value = config.fonnteToken || '';
-                document.getElementById('waRecipient').value = config.waRecipient || '';
-                document.getElementById('waMembers').value = config.waMembers || '';
-            });
-    }
+
 
     saveBtn.addEventListener('click', () => {
         const newConfig = {

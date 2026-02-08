@@ -17,7 +17,8 @@ $data = [
     'teleEnabled' => $input['teleEnabled'] ?? false,
     'fonnteToken' => $input['fonnteToken'] ?? '',
     'waRecipient' => $input['waRecipient'] ?? '', // Group ID
-    'waEnabled' => $input['waEnabled'] ?? false
+    'waEnabled' => $input['waEnabled'] ?? false,
+    'waMembers' => $input['waMembers'] ?? ''
 ];
 
 if (file_put_contents($configFile, json_encode($data, JSON_PRETTY_PRINT))) {
