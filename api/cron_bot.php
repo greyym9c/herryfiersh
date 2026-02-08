@@ -27,7 +27,7 @@ $botLog = file_exists($logFile) ? json_decode(file_get_contents($logFile), true)
 if (!is_array($botLog)) $botLog = [];
 
 if ((empty($botConfig['teleEnabled']) || empty($botConfig['teleToken']) || empty($botConfig['teleChatId'])) && 
-    (empty($botConfig['waEnabled']) || empty($botConfig['waApiKey']) || empty($botConfig['waRecipient']))) {
+    (empty($botConfig['waEnabled']) || empty($botConfig['fonnteToken']) || empty($botConfig['waRecipient']))) {
     echo json_encode(['status' => 'skipped', 'message' => 'Both Bots disabled or incomplete config']);
     exit;
 }
