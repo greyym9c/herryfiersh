@@ -139,7 +139,7 @@ if (!empty($triggeredItems)) {
               CURLOPT_CUSTOMREQUEST => 'POST',
               CURLOPT_POSTFIELDS => array(
                 'target' => $number,
-                'message' => $msg,
+                'message' => $msg . (empty($botConfig['waMembers']) ? "" : "\n\n" . implode(" ", array_map(function($n){ return "@" . trim($n); }, explode(",", $botConfig['waMembers'])))),
               ),
               CURLOPT_HTTPHEADER => array(
                 'Authorization: ' . $botConfig['fonnteToken']

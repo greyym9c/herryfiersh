@@ -145,8 +145,13 @@
                             <i class="fa-brands fa-whatsapp me-2 text-success"></i><b>WhatsApp (Fonnte):</b> Pastikan device terhubung di Dashboard Fonnte.
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small text-secondary fw-bold">FONNTE TOKEN</label>
-                            <input type="text" id="fonnteToken" class="form-control bg-dark text-white border-secondary" placeholder="Masukkan Token Fonnte...">
+                            <label class="form-label text-secondary small">Fonnte API Token</label>
+                            <input type="text" id="fonnteToken" class="form-control bg-dark text-white border-secondary">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Daftar Nomor Member (untuk Tag All)</label>
+                            <textarea id="waMembers" rows="3" class="form-control bg-dark text-white border-secondary" placeholder="08123..., 08124... (pisahkan koma)"></textarea>
+                            <small class="text-muted" style="font-size: 0.7rem;">Nomor HP akan otomatis diformat menjadi 628...</small>
                         </div>
                         <div class="mb-3">
                             <label class="form-label small text-secondary fw-bold">GROUP ID (PENERIMA)</label>
@@ -740,6 +745,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function loadBotConfig() {
+        fetch(configPath)
+            .then(res => res.json())
+            .then(config => {
+                botConfig = config; // Update global config
+                document.getElementById('teleBotToken').value = config.teleToken || '';
+                document.getElementById('teleChatId').value = config.teleChatId || '';
+                document.getElementById('teleBotEnabled').checked = config.teleEnabled || false;
+                document.getElementById('waEnabled').checked = config.waEnabled || false;
+                document.getElementById('fonnteToken').value = config.fonnteToken || '';
+                document.getElementById('waRecipient').value = config.waRecipient || '';
+                document.getElementById('waMembers').value = config.waMembers || '';
+            });
+    }
+
     saveBtn.addEventListener('click', () => {
         const newConfig = {
             teleToken: document.getElementById('teleBotToken').value.trim(),
@@ -747,7 +767,14 @@ document.addEventListener('DOMContentLoaded', function() {
             teleEnabled: document.getElementById('teleBotEnabled').checked,
             fonnteToken: document.getElementById('fonnteToken').value.trim(),
             waRecipient: document.getElementById('waRecipient').value.trim(),
-            waEnabled: document.getElementById('waEnabled').checked
+            waEnabled: document.getElementById('waEnabled').checked,
+            // Clean and format members list
+            waMembers: document.getElementById('waMembers').value.split(',')
+                .map(n => n.trim().replace(/[^0-9]/g, ''))
+                .map(n => n.startsWith('0') ? '62' + n.substring(1) : n)
+                .map(n => n.startsWith('62') ? n : '62' + n)
+                .filter(n => n.length > 5 && n !== '62')
+                .join(',')
         };
 
         if (newConfig.teleEnabled && (!newConfig.teleToken || !newConfig.teleChatId)) {
