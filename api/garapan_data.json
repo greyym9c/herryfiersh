@@ -1,6 +1,6 @@
 [
     {
-        "id": "myxl_x_ovo",
+        "id": "myxl_x_ovo_1000",
         "nama_garapan": "MyXL X OVO",
         "jam": "10:00",
         "periode": "Harian",
@@ -12,7 +12,7 @@
         "prioritas": "3"
     },
     {
-        "id": "ag_x_shopee",
+        "id": "ag_x_shopee_1000",
         "nama_garapan": "AG X Shopee",
         "jam": "10:00",
         "periode": "Harian",
@@ -24,7 +24,7 @@
         "prioritas": "3"
     },
     {
-        "id": "shopee_x_treasury",
+        "id": "shopee_x_treasury_0000",
         "nama_garapan": "Shopee x Treasury",
         "jam": "00:00",
         "periode": "Harian",
@@ -36,7 +36,7 @@
         "prioritas": "2"
     },
     {
-        "id": "ag_x_ovo",
+        "id": "ag_x_ovo_0000",
         "nama_garapan": "AG X OVO",
         "jam": "00:00",
         "periode": "Harian",
@@ -60,19 +60,19 @@
         "prioritas": "3"
     },
     {
-        "id": "qpon_x_indogold",
+        "id": "qpon_x_indogold_0000",
         "nama_garapan": "QPON x Indogold",
         "jam": "00:00",
         "periode": "Harian",
         "cashback": "8.000",
-        "keterangan": "Pantau Restokan Qpon Indogold 100k Indogold 50k Indomaret 25k Voucher diskon 8k dari rolet harian Bot jika server on : https://monitorqpon.broriz-dev.workers.dev/",
+        "keterangan": "Pantau Restokan Qpon Indogold 100k Indogold 50k Indomaret 25k Voucher diskon 8k dari rolet harian Bot jika server on : https:\/\/monitorqpon.broriz-dev.workers.dev\/",
         "tgl_mulai": "2026-02-01",
         "tgl_selesai": "2026-02-28",
         "status": "active",
         "prioritas": "3"
     },
     {
-        "id": "klik_indomaret_x_shopee",
+        "id": "klik_indomaret_x_shopee_0000",
         "nama_garapan": "Klik Indomaret x Shopee",
         "jam": "00:00",
         "periode": "Harian",
@@ -96,19 +96,19 @@
         "prioritas": "3"
     },
     {
-        "id": "ag_x_ovo_15k",
+        "id": "ag_x_ovo__15k_0000",
         "nama_garapan": "AG X OVO (15K)",
         "jam": "00:00",
         "periode": "Harian",
         "cashback": "15.000",
-        "keterangan": "Beli kuota tsel bodong 371k cashback 15k / Beli giftcard 300k cashback 15k",
+        "keterangan": "Beli giftcard 300k cashback 15k",
         "tgl_mulai": "2026-02-01",
         "tgl_selesai": "2026-02-24",
         "status": "active",
         "prioritas": "3"
     },
     {
-        "id": "myim3_x_ovo",
+        "id": "myim3_x_ovo_0900",
         "nama_garapan": "MyIM3 X OVO",
         "jam": "09:00",
         "periode": "Harian",
@@ -118,5 +118,65 @@
         "tgl_selesai": "2026-02-24",
         "status": "active",
         "prioritas": "3"
+    },
+    {
+        "id": "shopee_cc_1827",
+        "nama_garapan": "SHOPEE CC",
+        "jam": "18:00",
+        "periode": "Harian",
+        "cashback": "150.000",
+        "keterangan": "Shopee CC 15Jt Diskon 150K Shopee CC 5Jt Diskon 50K",
+        "tgl_mulai": "2026-02-19",
+        "tgl_selesai": "2026-02-20",
+        "status": "active",
+        "prioritas": "2"
+    },
+    {
+        "id": "shopee_33_2000",
+        "nama_garapan": "SHOPEE 33%",
+        "jam": "20:00",
+        "periode": "Harian",
+        "cashback": "100.000",
+        "keterangan": "Beli 2 Gratis 1 Shopee Extra Jangan lupa Keranjangin Produk",
+        "tgl_mulai": "2026-02-01",
+        "tgl_selesai": "2026-02-28",
+        "status": "active",
+        "prioritas": "2"
+    },
+    {
+        "id": "razer_shopee_0000",
+        "nama_garapan": "Razer Shopee",
+        "jam": "00:00",
+        "periode": "Harian",
+        "cashback": "20.000",
+        "keterangan": "Beli Razer 50K Diskon 20K",
+        "tgl_mulai": "2026-02-01",
+        "tgl_selesai": "2026-02-28",
+        "status": "active",
+        "prioritas": "3"
+    },
+    {
+        "id": "shopee_cc_0000",
+        "nama_garapan": "SHOPEE CC",
+        "jam": "00:00",
+        "periode": "Harian",
+        "cashback": "150.000",
+        "keterangan": "Shopee CC 15Jt Diskon 150K Shopee CC 5Jt Diskon 50K",
+        "tgl_mulai": "2026-02-19",
+        "tgl_selesai": "2026-02-20",
+        "status": "active",
+        "prioritas": "2"
+    },
+    {
+        "id": "shopee_cc_0800",
+        "nama_garapan": "SHOPEE CC",
+        "jam": "08:00",
+        "periode": "Harian",
+        "cashback": "150.000",
+        "keterangan": "Shopee CC 15Jt Diskon 150K Shopee CC 5Jt Diskon 50K",
+        "tgl_mulai": "2026-02-19",
+        "tgl_selesai": "2026-02-20",
+        "status": "active",
+        "prioritas": "2"
     }
 ]

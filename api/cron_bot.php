@@ -46,12 +46,9 @@ $logEntries = $botLog[$currentDate] ?? [];
 foreach ($garapanData as $item) {
     if (empty($item['jam']) || $item['status'] !== 'active') continue;
 
-    // Check Date Range
-    if (!empty($item['tgl_mulai']) && !empty($item['tgl_selesai'])) {
-        if ($currentDate < $item['tgl_mulai'] || $currentDate > $item['tgl_selesai']) {
-             if ($currentDate > $item['tgl_selesai']) continue;
-        }
-    }
+    // Check Date Range Strict
+    if (!empty($item['tgl_mulai']) && $currentDate < $item['tgl_mulai']) continue;
+    if (!empty($item['tgl_selesai']) && $currentDate > $item['tgl_selesai']) continue;
 
     list($h, $m) = explode(':', $item['jam']);
     $taskTimeVal = ($h * 60) + $m;

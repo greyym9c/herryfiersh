@@ -282,10 +282,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const today = new Date().toISOString().split('T')[0];
                 
-                // Active: Not manually finished AND (No tgl_selesai OR tgl_selesai hasn't passed)
+                // Active: Not manually finished AND (No tgl_selesai OR tgl_selesai hasn't passed) AND (No tgl_mulai OR tgl_mulai has started)
                 let active = data.filter(i => 
                     i.status !== 'finished' && 
-                    (!i.tgl_selesai || i.tgl_selesai >= today)
+                    (!i.tgl_selesai || i.tgl_selesai >= today) &&
+                    (!i.tgl_mulai || i.tgl_mulai <= today)
                 );
                 
                 // Sort Active data by countdown
@@ -391,13 +392,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const item = activeData.find(i => i.id === rowId);
 
             if (item && item.periode === 'Harian' && diff < 0) {
-                diff += 86400000; // Point to tomorrow
+                // Check if tomorrow is still within tgl_selesai
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+                if (!item.tgl_selesai || item.tgl_selesai >= tomorrowStr) {
+                    diff += 86400000; // Point to tomorrow
+                }
             }
 
             let statusClass = 'text-warning';
 
             if (diff < 0) {
-                // This will only happen for "Sekali Jalan" because Harian diff was added 24h above
+                // It has passed completely (either Sekali Jalan passed, or Harian on last day passed)
                 statusClass = 'text-secondary opacity-50';
                 const absDiff = Math.abs(diff);
                 const hh = Math.floor(absDiff / 1000 / 60 / 60);
