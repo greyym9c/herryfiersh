@@ -148,11 +148,7 @@
                             <label class="form-label text-secondary small">Fonnte API Token</label>
                             <input type="text" id="fonnteToken" class="form-control bg-dark text-white border-secondary">
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label text-secondary small">Daftar Nomor Member (untuk Tag All)</label>
-                            <textarea id="waMembers" rows="3" class="form-control bg-dark text-white border-secondary" placeholder="08123..., 08124... (pisahkan koma)"></textarea>
-                            <small class="text-muted" style="font-size: 0.7rem;">Nomor HP akan otomatis diformat menjadi 628...</small>
-                        </div>
+
                         <div class="mb-3">
                             <label class="form-label small text-secondary fw-bold">GROUP ID (PENERIMA)</label>
                             <input type="text" id="waRecipient" class="form-control bg-dark text-white border-secondary" placeholder="Contoh: 120363...@g.us">
@@ -217,7 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (data.fonnteToken !== undefined) botConfig.fonnteToken = data.fonnteToken;
                 if (data.waRecipient !== undefined) botConfig.waRecipient = data.waRecipient;
-                if (data.waMembers !== undefined) botConfig.waMembers = data.waMembers;
                 botConfig.waEnabled = data.waEnabled === true || data.waEnabled === "true";
                 
                 updateModalUI();
@@ -255,8 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'teleBotEnabled': botConfig.teleEnabled,
             'fonnteToken': botConfig.fonnteToken,
             'waRecipient': botConfig.waRecipient,
-            'waEnabled': botConfig.waEnabled,
-            'waMembers': botConfig.waMembers
+            'waEnabled': botConfig.waEnabled
         };
 
         for (const [id, val] of Object.entries(mapping)) {
@@ -756,14 +750,7 @@ document.addEventListener('DOMContentLoaded', function() {
             teleEnabled: document.getElementById('teleBotEnabled').checked,
             fonnteToken: document.getElementById('fonnteToken').value.trim(),
             waRecipient: document.getElementById('waRecipient').value.trim(),
-            waEnabled: document.getElementById('waEnabled').checked,
-            // Clean and format members list
-            waMembers: document.getElementById('waMembers').value.split(',')
-                .map(n => n.trim().replace(/[^0-9]/g, ''))
-                .map(n => n.startsWith('0') ? '62' + n.substring(1) : n)
-                .map(n => n.startsWith('62') ? n : '62' + n)
-                .filter(n => n.length > 5 && n !== '62')
-                .join(',')
+            waEnabled: document.getElementById('waEnabled').checked
         };
 
         if (newConfig.teleEnabled && (!newConfig.teleToken || !newConfig.teleChatId)) {
