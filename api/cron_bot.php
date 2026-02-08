@@ -136,7 +136,7 @@ if (!empty($triggeredItems)) {
               CURLOPT_RETURNTRANSFER => true,
               CURLOPT_ENCODING => '',
               CURLOPT_MAXREDIRS => 10,
-              CURLOPT_TIMEOUT => 0,
+              CURLOPT_TIMEOUT => 30, // Increased timeout
               CURLOPT_FOLLOWLOCATION => true,
               CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
               CURLOPT_CUSTOMREQUEST => 'POST',
@@ -147,7 +147,7 @@ if (!empty($triggeredItems)) {
               CURLOPT_HTTPHEADER => array(
                 'Authorization: ' . $botConfig['fonnteToken']
               ),
-              CURLOPT_SSL_VERIFYPEER => false // Disable SSL verification for local dev if needed
+              CURLOPT_SSL_VERIFYPEER => false
             ));
 
             $response = curl_exec($curl);
@@ -155,7 +155,17 @@ if (!empty($triggeredItems)) {
             $error = curl_error($curl);
             curl_close($curl);
             
-            // Sleep for rate limit (Fonnte is robust but good practice)
+            // Log Fonnte Response
+            $logEntries[] = [
+                'id' => 'fonnte_debug_' . time(),
+                'bot' => 'whatsapp_fonnte',
+                'timestamp' => date('Y-m-d H:i:s'),
+                'recipient' => $number,
+                'response' => json_decode($response, true) ?? $response,
+                'error' => $error
+            ];
+
+            // Sleep for rate limit
             sleep(2);
         }
     }
