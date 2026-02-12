@@ -178,5 +178,41 @@
         "tgl_selesai": "2026-02-20",
         "status": "active",
         "prioritas": "2"
+    },
+    {
+        "id": "dbank_cny_1800",
+        "nama_garapan": "QRIS D-Bank Pro Special CNY",
+        "jam": "18:00",
+        "periode": "Event",
+        "cashback": "250.000",
+        "keterangan": "Scan QRIS Rp 1.000.000 dapatkan cashback 25% maks Rp 250.000. Cashback dikreditkan maksimum 14 hari kerja setelah periode berakhir",
+        "tgl_mulai": "2026-02-13",
+        "tgl_selesai": "2026-02-28",
+        "status": "active",
+        "prioritas": "2"
+    },
+    {
+        "id": "brimo_valentine_1200",
+        "nama_garapan": "Topup E-wallet BRIMO Valentine",
+        "jam": "12:00",
+        "periode": "Event",
+        "cashback": "50.000",
+        "keterangan": "Lakukan 1x TopUp e-Wallet di BRImo (ShopeePay, DANA, GoPay, OVO, dll) min Rp152.000, lalu 2 transaksi tambahan (QRIS/BRIVA). 450 tercepat.",
+        "tgl_mulai": "2026-02-13",
+        "tgl_selesai": "2026-02-28",
+        "status": "active",
+        "prioritas": "3"
+    },
+    {
+        "id": "neobank_qris_0000",
+        "nama_garapan": "QRIS NeoBank",
+        "jam": "00:00",
+        "periode": "Harian",
+        "cashback": "20.000",
+        "keterangan": "3x kesempatan/hari diskon QRIS acak hingga Rp20.000 min transaksi Rp100.000.",
+        "tgl_mulai": "2026-02-13",
+        "tgl_selesai": "2026-02-28",
+        "status": "active",
+        "prioritas": "3"
     }
 ]
