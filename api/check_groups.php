@@ -43,7 +43,10 @@ if ($error) {
     $json = json_decode($response, true);
     
     if (isset($json['status']) && $json['status'] == true && isset($json['data'])) {
-        echo "SUCCESS! Found " . count($json['data']) . " groups:\n\n";
+        echo "Found " . count($json['data']) . " groups.\n";
+        echo "Dumping first group data for inspection:\n";
+        print_r($json['data'][0]);
+        echo "\n--------------------------------\n";
         
         foreach ($json['data'] as $group) {
             echo "Name: " . $group['name'] . "\n";
