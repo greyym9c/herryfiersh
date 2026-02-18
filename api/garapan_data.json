@@ -214,5 +214,113 @@
         "tgl_selesai": "2026-02-28",
         "status": "active",
         "prioritas": "3"
+    },
+    {
+        "id": "roblox_shopee_0000",
+        "nama_garapan": "Roblox Shopee",
+        "jam": "00:00",
+        "periode": "Harian",
+        "cashback": "12.500",
+        "keterangan": "Dapatkan flashsale roblox 50k di shopee harga 37.5k",
+        "tgl_mulai": "2026-02-18",
+        "tgl_selesai": "2026-02-28",
+        "status": "active",
+        "prioritas": "3"
+    },
+    {
+        "id": "allo_bank_va_0000",
+        "nama_garapan": "Promo Spesial Ramadan – VA Payment AlloBank",
+        "jam": "00:00",
+        "periode": "Harian",
+        "cashback": "10.000",
+        "keterangan": "Cukup lakukan 1x transaksi melalui menu VA Payment di aplikasi AlloBank dan nikmati cashback berikut: 💳 Gunakan saldo AlloPrime 🔹 Transaksi min. Rp250.000 → Cashback Rp10.000 🔹 Transaksi min. Rp50.000 → Cashback Rp5.000 🎁 Maksimal 1x cashback per nasabah selama periode promo ⏳ Kuota terbatas: 150 transaksi per hari",
+        "tgl_mulai": "2026-02-18",
+        "tgl_selesai": "2026-03-17",
+        "status": "active",
+        "prioritas": "3"
+    },
+    {
+        "id": "check_in_kredivo_0700",
+        "nama_garapan": "Check In Kredivo",
+        "jam": "07:00",
+        "periode": "Harian",
+        "cashback": "2.000 - 1.000.000",
+        "keterangan": "Checkin Woii @semua",
+        "tgl_mulai": "2026-02-18",
+        "tgl_selesai": "2026-02-25",
+        "status": "active",
+        "prioritas": "3"
+    },
+    {
+        "id": "sukha_hemat_klik_indomaret",
+        "nama_garapan": "Program Sukha Hemat Klik Indomaret",
+        "jam": "00:00",
+        "periode": "Harian",
+        "cashback": "50.000",
+        "keterangan": "Cashback 25% s.d. Rp50 ribu di Fitur Livin' Sukha melalui aplikasi Livin' by Mandiri",
+        "tgl_mulai": "2026-02-01",
+        "tgl_selesai": "2026-03-31",
+        "status": "active",
+        "prioritas": "3"
+    },
+    {
+        "id": "neo_imlek_unipin",
+        "nama_garapan": "Neo Imlek Jajan UniPin",
+        "jam": "00:00",
+        "periode": "Harian",
+        "cashback": "50.000",
+        "keterangan": "Neo Imlek Jajan UniPin",
+        "tgl_mulai": "2026-02-01",
+        "tgl_selesai": "2026-02-17",
+        "status": "active",
+        "prioritas": "3"
+    },
+    {
+        "id": "mvp_valentine_raya",
+        "nama_garapan": "MVP Valentine Bank Raya",
+        "jam": "00:00",
+        "periode": "Harian",
+        "cashback": "10.000",
+        "keterangan": "MVP Valentine Bank Raya",
+        "tgl_mulai": "2026-02-01",
+        "tgl_selesai": "2026-02-15",
+        "status": "active",
+        "prioritas": "3"
+    },
+    {
+        "id": "allo_bank_cny",
+        "nama_garapan": "QRIS Allo Bank: Kado CNY Voucher Rp10.000",
+        "jam": "00:00",
+        "periode": "Harian",
+        "cashback": "10.000",
+        "keterangan": "QRIS Allo Bank: Kado CNY Voucher Rp10.000",
+        "tgl_mulai": "2026-02-01",
+        "tgl_selesai": "2026-02-17",
+        "status": "active",
+        "prioritas": "3"
+    },
+    {
+        "id": "neobank_ramadhan",
+        "nama_garapan": "Jajan Hemat Awal Ramadhan Neobank",
+        "jam": "00:00",
+        "periode": "Harian",
+        "cashback": "14.470",
+        "keterangan": "Jajan Hemat Awal Ramadhan Neobank",
+        "tgl_mulai": "2026-02-01",
+        "tgl_selesai": "2026-02-20",
+        "status": "active",
+        "prioritas": "3"
+    },
+    {
+        "id": "dbank_bukber",
+        "nama_garapan": "Nikmati Cashback hingga Rp50 Ribu untuk Bukber dengan QRIS D-Bank PRO",
+        "jam": "00:00",
+        "periode": "Harian",
+        "cashback": "10.000",
+        "keterangan": "Nikmati Cashback hingga Rp50 Ribu untuk Bukber dengan QRIS D-Bank PRO",
+        "tgl_mulai": "2026-02-01",
+        "tgl_selesai": "2026-02-19",
+        "status": "active",
+        "prioritas": "3"
     }
 ]
