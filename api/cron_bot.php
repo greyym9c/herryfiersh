@@ -46,10 +46,6 @@ $logEntries = $botLog[$currentDate] ?? [];
 foreach ($garapanData as $item) {
     if (empty($item['jam']) || $item['status'] !== 'active') continue;
 
-    // Check Date Range Strict
-    if (!empty($item['tgl_mulai']) && $currentDate < $item['tgl_mulai']) continue;
-    if (!empty($item['tgl_selesai']) && $currentDate > $item['tgl_selesai']) continue;
-
     list($h, $m) = explode(':', $item['jam']);
     $taskTimeVal = ($h * 60) + $m;
     
@@ -57,13 +53,18 @@ foreach ($garapanData as $item) {
     $minutesUntil = ($taskTimeVal - $currentTimeVal + 1440) % 1440;
 
     if ($minutesUntil === 10) {
-        // Special Check for Midnight Rollover
+        // Determine the actual date of the task occurrence we are notifying for
+        $targetDate = $currentDate; 
+        
+        // Example: Now 23:50 (1430), Task 00:00 (0). 
+        // 0 < 1430, so task is tomorrow.
         if ($taskTimeVal < $currentTimeVal) { 
-             $tomorrowDate = date('Y-m-d', strtotime('+1 day'));
-             if (!empty($item['tgl_selesai']) && $tomorrowDate > $item['tgl_selesai']) {
-                 continue; 
-             }
+             $targetDate = date('Y-m-d', strtotime('+1 day'));
         }
+
+        // Validate Date Range against TARGET DATE, not current date
+        if (!empty($item['tgl_mulai']) && $targetDate < $item['tgl_mulai']) continue;
+        if (!empty($item['tgl_selesai']) && $targetDate > $item['tgl_selesai']) continue;
 
         // Unique Log Key
         $logKey = "sent_" . $item['id'] . "_" . str_replace(':', '', $item['jam']);
