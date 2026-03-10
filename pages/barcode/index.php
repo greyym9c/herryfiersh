@@ -38,7 +38,7 @@
                 <div class="row g-3">
                     <div class="col-12">
                         <label class="form-label small text-secondary fw-bold">INPUT MANUAL</label>
-                        <input type="text" id="barcodeValue" class="form-control bg-dark text-white border-secondary" placeholder="Masukkan Kode...">
+                        <textarea id="barcodeValue" class="form-control bg-dark text-white border-secondary" rows="3" placeholder="Masukkan Kode (Bisa banyak, pisahkan dengan Enter)..."></textarea>
                     </div>
 
                     <div class="col-12">
@@ -125,7 +125,6 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(updateClock, 1000);
     updateClock();
 
-    // --- Excel Logic ---
     document.getElementById('excelInput').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -137,8 +136,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
             const jsonData = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
 
-            // Extract codes from first column
-            const newCodes = jsonData.flat().filter(val => val && val.toString().trim() !== '');
+            // Extract codes from first column and sanitize
+            const newCodes = jsonData.flat()
+                .filter(val => val !== null && val !== undefined)
+                .map(val => val.toString().replace(/[^\x20-\x7E]/g, '').trim())
+                .filter(val => val !== '');
+                
             processCodes(newCodes);
         };
         reader.readAsArrayBuffer(file);
@@ -146,17 +149,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function processCodes(codes) {
         codes.forEach(code => {
-            if (!barcodeData.includes(code.toString())) {
-                barcodeData.push(code.toString());
+            const cleanCode = code.toString().replace(/[^\x20-\x7E]/g, '').trim();
+            if (cleanCode && !barcodeData.includes(cleanCode)) {
+                barcodeData.push(cleanCode);
             }
         });
         renderBarcodes();
     }
 
     window.addManualBarcode = function() {
-        const val = document.getElementById('barcodeValue').value.trim();
-        if (val) {
-            processCodes([val]);
+        const val = document.getElementById('barcodeValue').value;
+        const codes = val.split('\n').map(c => c.replace(/[^\x20-\x7E]/g, '').trim()).filter(c => c !== '');
+        if (codes.length > 0) {
+            processCodes(codes);
             document.getElementById('barcodeValue').value = '';
         }
     };
@@ -188,7 +193,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const height = document.getElementById('barcodeHeight').value;
         const displayValue = document.getElementById('displayValue').checked;
 
-        barcodeData.forEach((code, idx) => {
+        // LIMIT PREVIEW to 50 items to avoid DOM lag
+        const previewLimit = Math.min(barcodeData.length, 50);
+        const previewData = barcodeData.slice(0, previewLimit);
+
+        previewData.forEach((code, idx) => {
             const wrapper = document.createElement('div');
             wrapper.className = 'col-sm-6 col-md-4 col-xl-3';
             wrapper.innerHTML = `
@@ -218,10 +227,31 @@ document.addEventListener('DOMContentLoaded', function() {
                     margin: 2
                 });
             } catch (e) {
-                console.error("Barcode error:", e);
-                wrapper.querySelector('svg').innerHTML = `<text y="20" fill="red" font-size="10">Format Salah</text>`;
+                console.warn("Format tidak cocok, mencoba CODE128:", e);
+                try {
+                    JsBarcode(`#bc_${idx}`, code, {
+                        format: "CODE128",
+                        width: width,
+                        height: height,
+                        displayValue: displayValue,
+                        fontSize: 10,
+                        margin: 2
+                    });
+                } catch(err2) {
+                    wrapper.style.display = 'none';
+                }
             }
         });
+
+        if (barcodeData.length > 50) {
+            const notice = document.createElement('div');
+            notice.className = 'col-12 mt-4 text-center';
+            notice.innerHTML = `<div class="alert alert-info border-0 shadow-sm" style="background: rgba(13, 110, 253, 0.1); color: #93c5fd;">
+                <i class="fa-solid fa-circle-info me-2"></i> Menampilkan ${previewLimit} preview dari total <strong>${barcodeData.length}</strong> barcode. 
+                <br><em>(Membatasi preview agar browser tidak lag. Tenang, semua ${barcodeData.length} barcode tetap masuk ke PDF).</em>
+            </div>`;
+            container.appendChild(notice);
+        }
     }
 
     // --- Individual Download Functions ---
@@ -262,53 +292,129 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // --- PDF Logic ---
-    document.getElementById('downloadPdfBtn').addEventListener('click', async function() {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const container = document.getElementById('barcodeContainer');
-        const items = container.querySelectorAll('svg');
-        
+    document.getElementById('downloadPdfBtn').addEventListener('click', function() {
         const btn = this;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Memproses PDF...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Menyiapkan Cetak...';
         btn.disabled = true;
 
-        let xOffset = 10;
-        let yOffset = 20;
-        const pageWidth = 210;
-        const pageHeight = 297;
-        const itemWidth = 45;
-        const itemHeight = 35;
+        // Gunakan metode Cetak Browser Native (Browser Print to PDF) karena 100% anti lag & ketajaman SVG sempurna (Vector).
+        let iframe = document.getElementById('printIframe');
+        if (iframe) iframe.remove();
+        
+        iframe = document.createElement('iframe');
+        iframe.id = 'printIframe';
+        iframe.style.position = 'absolute';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = 'none';
+        document.body.appendChild(iframe);
 
-        pdf.setFontSize(16);
-        pdf.text("Rekapan Barcode HerryFiersh", 10, 10);
-        pdf.setFontSize(8);
-        pdf.text(`Dihasilkan pada: ${new Date().toLocaleString('id-ID')}`, 10, 15);
+        const idoc = iframe.contentWindow.document;
+        idoc.open();
+        idoc.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Cetak PDF Barcode - ${new Date().toLocaleString('id-ID')}</title>
+            <style>
+                @page { size: A4 portrait; margin: 15mm; }
+                body { font-family: sans-serif; margin: 0; padding: 0; background: #fff; color: #000; }
+                .page { width: 100%; page-break-after: always; display: flex; flex-direction: column; height: 260mm; }
+                .header { text-align: left; margin-bottom: 20px; flex-shrink: 0; }
+                .header h1 { font-size: 18pt; margin: 0 0 5px 0; }
+                .header p { font-size: 10pt; margin: 0; color: #555; }
+                .grid { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 40mm; gap: 15px; flex-grow: 1; }
+                .barcode-item { display: flex; justify-content: center; align-items: center; padding: 5px; box-sizing: border-box; }
+                svg { max-width: 100%; max-height: 100%; }
+            </style>
+        </head>
+        <body>
+            <div id="printRoot"></div>
+        </body>
+        </html>
+        `);
+        idoc.close();
 
-        for (let i = 0; i < items.length; i++) {
-            const svg = items[i];
-            
-            // Convert SVG to Canvas then to Image
-            const canvas = await html2canvas(svg.parentElement, { scale: 3, backgroundColor: '#ffffff' });
-            const imgData = canvas.toDataURL('image/png');
+        const root = idoc.getElementById('printRoot');
+        const format = document.getElementById('barcodeFormat').value;
+        const displayValue = document.getElementById('displayValue').checked;
 
-            if (xOffset + itemWidth > pageWidth - 10) {
-                xOffset = 10;
-                yOffset += itemHeight + 5;
+        const process = async () => {
+            try {
+                let pageCount = Math.ceil(barcodeData.length / 10);
+                let currentItem = 0;
+
+                for (let p = 0; p < pageCount; p++) {
+                    const page = idoc.createElement('div');
+                    page.className = 'page';
+                    
+                    const header = idoc.createElement('div');
+                    header.className = 'header';
+                    header.innerHTML = `<h1>Rekapan Barcode HerryFiersh</h1><p>Dihasilkan pada: ${new Date().toLocaleString('id-ID')}</p>`;
+                    page.appendChild(header);
+
+                    const grid = idoc.createElement('div');
+                    grid.className = 'grid';
+
+                    for (let i = 0; i < 10; i++) {
+                        if (currentItem >= barcodeData.length) break;
+                        
+                        if (currentItem % 10 === 0) {
+                            let pct = Math.round((currentItem/barcodeData.length)*100);
+                            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin me-2"></i> Merender SVG... ${pct}%`;
+                            await new Promise(r => setTimeout(r, 0));
+                        }
+
+                        const code = barcodeData[currentItem];
+                        const itemDiv = idoc.createElement('div');
+                        itemDiv.className = 'barcode-item';
+                        
+                        // Gunakan idoc.createElementNS agar konteks dokumennya sama
+                        const svg = idoc.createElementNS("http://www.w3.org/2000/svg", "svg");
+                        
+                        try {
+                            JsBarcode(svg, code, { format: format, width: 2, height: 60, displayValue: displayValue, fontSize: 16, margin: 5 });
+                        } catch (e) {
+                            try {
+                                JsBarcode(svg, code, { format: "CODE128", width: 2, height: 60, displayValue: displayValue, fontSize: 16, margin: 5 });
+                            } catch (err2) {
+                                // Jika benar-benar gagal (misal karakter tidak valid), lewati dan buat tanda merah
+                                const errorText = idoc.createElement('div');
+                                errorText.style.color = "red";
+                                errorText.style.fontSize = "12px";
+                                errorText.innerText = "Error: " + code;
+                                itemDiv.appendChild(errorText);
+                            }
+                        }
+
+                        if (!itemDiv.hasChildNodes() || itemDiv.firstChild !== svg) {
+                            // If it wasn't replaced by error text
+                            itemDiv.appendChild(svg);
+                        }
+                        
+                        grid.appendChild(itemDiv);
+                        currentItem++;
+                    }
+                    page.appendChild(grid);
+                    root.appendChild(page);
+                }
+
+                btn.innerHTML = '<i class="fa-solid fa-print me-1"></i> Membuka Print Dialog...';
+                
+                setTimeout(() => {
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                    btn.innerHTML = '<i class="fa-solid fa-file-pdf me-1"></i> EXPORT REKAPAN PDF';
+                    btn.disabled = false;
+                }, 500);
+            } catch (fatalErr) {
+                console.error("Fatal error res:", fatalErr);
+                btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-1"></i> Error Render';
+                btn.disabled = false;
             }
-
-            if (yOffset + itemHeight > pageHeight - 10) {
-                pdf.addPage();
-                yOffset = 20;
-                xOffset = 10;
-            }
-
-            pdf.addImage(imgData, 'PNG', xOffset, yOffset, itemWidth, itemHeight);
-            xOffset += itemWidth + 5;
-        }
-
-        pdf.save(`Rekapan_Barcode_${Date.now()}.pdf`);
-        btn.innerHTML = '<i class="fa-solid fa-file-pdf me-1"></i> EXPORT REKAPAN PDF';
-        btn.disabled = false;
+        };
+        
+        process();
     });
 
     // Re-render when options change

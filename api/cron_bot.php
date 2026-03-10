@@ -99,10 +99,6 @@ if (!empty($triggeredItems)) {
         
         foreach ($chatIds as $chatId) {
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "https://api.telegram.org/bot" . $botConfig['botToken'] . "/sendMessage"); // Fix: check key name, usually teleToken
-            // Wait, previous code used $botConfig['teleToken']. My snippet above used 'botToken' by mistake in the URL line? 
-            // Checking previous file... it was $botConfig['teleToken'].
-            // Retrying with correct key.
             curl_setopt($ch, CURLOPT_URL, "https://api.telegram.org/bot" . $botConfig['teleToken'] . "/sendMessage");
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
@@ -129,24 +125,18 @@ if (!empty($triggeredItems)) {
         foreach ($recipients as $number) {
             $curl = curl_init();
 
-            curl_setopt_array($curl, array(
-              CURLOPT_URL => 'https://api.fonnte.com/send',
-              CURLOPT_RETURNTRANSFER => true,
-              CURLOPT_ENCODING => '',
-              CURLOPT_MAXREDIRS => 10,
-              CURLOPT_TIMEOUT => 30, // Increased timeout
-              CURLOPT_FOLLOWLOCATION => true,
-              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-              CURLOPT_CUSTOMREQUEST => 'POST',
-              CURLOPT_POSTFIELDS => array(
+            curl_setopt($curl, CURLOPT_URL, "https://api.fonnte.com/send");
+            curl_setopt($curl, CURLOPT_HEADER, false);
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, array(
                 'target' => $number,
                 'message' => $msg,
-              ),
-              CURLOPT_HTTPHEADER => array(
-                'Authorization: ' . $botConfig['fonnteToken']
-              ),
-              CURLOPT_SSL_VERIFYPEER => false
             ));
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                "Authorization: " . $botConfig['fonnteToken']
+            ));
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
             $response = curl_exec($curl);
             $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
