@@ -1,0 +1,15 @@
+Debug Start: 2026-03-10 11:30:24
+Token: o7RofHHPHdm9Fa4Xa8gR
+
+Target: 120363405072231013@g.us
+Error: 
+Response: {"detail":"success! message in queue","id":[147185231],"process":"pending","quota":{"087775785980":{"details":"deduced from total quota","quota":928,"remaining":927,"used":1}},"requestid":416572428,"status":true,"target":["120363405072231013@g.us"]}
+--------------------------------
+Target: 120363405072231013
+Error: 
+Response: {"reason":"target input invalid","requestid":416572471,"status":false,"target":"120363405072231013"}
+--------------------------------
+Target: 087775785980
+Error: 
+Response: {"detail":"success! message in queue","id":[147185248],"process":"pending","quota":{"087775785980":{"details":"deduced from total quota","quota":927,"remaining":926,"used":1}},"requestid":416572493,"status":true,"target":["6287775785980"]}
+--------------------------------

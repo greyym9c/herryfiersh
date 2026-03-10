@@ -695,9 +695,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const text = `🔔 *PENGINGAT GARAPAN* (10 Menit Lagi)\n\n📌 *Projek:* ${item.nama_garapan}\n⏰ *Jam:* ${item.jam} WIB\n💰 *Promo:* Rp ${item.cashback || '0'}\n📝 *Ket:* ${item.keterangan || '-'}`;
         
-        // Client-side sending disabled for MPWA to avoid CORS / Key exposure.
-        // The Server (Cron Job) handles the actual sending.
-        console.log("Visual WA Notification for:", item.nama_garapan);
+        // Panggil endpoint PHP untuk mengirim via Fonnte tanpa batasan CORS di browser
+        fetch('api/send_wa.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: text })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("WA Notification sent:", data);
+        })
+        .catch(err => {
+            console.error("WA Notification fail:", err);
+        });
     }
 
     function sendTelegram(item) {
