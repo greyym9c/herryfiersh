@@ -1,0 +1,14 @@
+[
+    {
+        "id": "sukha_hemat_klik_indomaret",
+        "nama_garapan": "Program Sukha Hemat Klik Indomaret",
+        "jam": "00:00",
+        "periode": "Harian",
+        "cashback": "50.000",
+        "keterangan": "Cashback 25% s.d. Rp50 ribu di Fitur Livin' Sukha melalui aplikasi Livin' by Mandiri",
+        "tgl_mulai": "2026-02-01",
+        "tgl_selesai": "2026-03-31",
+        "status": "active",
+        "prioritas": "3"
+    }
+]

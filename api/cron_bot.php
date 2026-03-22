@@ -46,13 +46,16 @@ $logEntries = $botLog[$currentDate] ?? [];
 foreach ($garapanData as $item) {
     if (empty($item['jam']) || $item['status'] !== 'active') continue;
 
-    list($h, $m) = explode(':', $item['jam']);
-    $taskTimeVal = ($h * 60) + $m;
+    $jam = trim($item['jam']);
+    if (empty($jam) || strpos($jam, ':') === false) continue;
+    
+    list($h, $m) = explode(':', $jam);
+    $taskTimeVal = (intval($h) * 60) + intval($m);
     
     // Circular Time Difference Calculation (10 mins before)
     $minutesUntil = ($taskTimeVal - $currentTimeVal + 1440) % 1440;
 
-    if ($minutesUntil === 10) {
+    if ($minutesUntil == 10) {
         // Determine the actual date of the task occurrence we are notifying for
         $targetDate = $currentDate; 
         
@@ -63,8 +66,8 @@ foreach ($garapanData as $item) {
         }
 
         // Validate Date Range against TARGET DATE, not current date
-        if (!empty($item['tgl_mulai']) && $targetDate < $item['tgl_mulai']) continue;
-        if (!empty($item['tgl_selesai']) && $targetDate > $item['tgl_selesai']) continue;
+        if (!empty($item['tgl_mulai']) && $targetDate < trim($item['tgl_mulai'])) continue;
+        if (!empty($item['tgl_selesai']) && $targetDate > trim($item['tgl_selesai'])) continue;
 
         // Unique Log Key
         $logKey = "sent_" . $item['id'] . "_" . str_replace(':', '', $item['jam']);
@@ -169,6 +172,14 @@ if (!empty($triggeredItems)) {
         $sentCount++;
     }
 }
+
+// Add execution history log
+$logEntries[] = [
+    'id' => 'cron_run_' . time(),
+    'bot' => 'system',
+    'timestamp' => date('Y-m-d H:i:s'),
+    'status' => 'executed'
+];
 
 // 5. Save Log
 $botLog[$currentDate] = $logEntries;

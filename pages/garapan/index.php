@@ -86,7 +86,17 @@
         <div id="emptyHistory" class="p-4 text-center d-none">
             <small class="text-secondary">Belum ada riwayat garapan selesai.</small>
         </div>
+    <!-- Log viewer -->
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
+        <h3 class="h5 mb-0 text-white opacity-75"><i class="fa-solid fa-file-waveform me-2 text-info"></i>Log Riwayat Bot</h3>
+        <button class="btn btn-sm btn-outline-secondary" onclick="loadBotLogs()" style="font-size: 0.75rem;"><i class="fa-solid fa-sync me-1"></i>Refresh</button>
     </div>
+    <div class="glass-panel p-3 mb-4 overflow-hidden shadow-sm" style="background-color: #0f1525; border-radius: 8px; border: 1px solid #1e293b; max-height: 250px; overflow-y: auto;">
+        <div id="botLogContent" class="small text-secondary" style="font-family: monospace; font-size: 0.8rem;">
+            <div class="text-center py-3">Memuat log...</div>
+        </div>
+    </div>
+
     <audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 </div>
 
@@ -651,6 +661,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentDay = now.toISOString().split('T')[0];
         const currentTime = now.getHours() * 60 + now.getMinutes();
         
+        let teleItems = [];
+        let waItems = [];
+
         activeData.forEach(item => {
             if (!item.jam) return;
             
@@ -659,88 +672,116 @@ document.addEventListener('DOMContentLoaded', function() {
             const diff = taskTime - currentTime;
             
             // Trigger 10 minutes before
-            if (diff === 10) {
+            if (diff <= 10 && diff > 0) {
+                const jamKey = item.jam.replace(':', '');
                 // Telegram Logic
                 if (botConfig.teleEnabled && botConfig.teleToken && botConfig.teleChatId) {
-                    const teleKeyStore = `tele_sent_${item.id}_${currentDay}`;
+                    const teleKeyStore = `tele_sent_${item.id}_${jamKey}_${currentDay}`;
                     if (!localStorage.getItem(teleKeyStore)) {
-                        sendTelegram(item);
+                        teleItems.push(item);
                         localStorage.setItem(teleKeyStore, 'true');
                     }
                 }
 
                 // WhatsApp Logic
                 if (botConfig.waEnabled && botConfig.fonnteToken && botConfig.waRecipient) {
-                    const waKeyStore = `wa_sent_${item.id}_${currentDay}`;
+                    const waKeyStore = `wa_sent_${item.id}_${jamKey}_${currentDay}`;
                     if (!localStorage.getItem(waKeyStore)) {
-                        sendWhatsApp(item);
+                        waItems.push(item);
                         localStorage.setItem(waKeyStore, 'true');
                     }
                 }
             }
         });
+
+        if (teleItems.length > 0) {
+            sendTelegram(teleItems);
+        }
+
+        if (waItems.length > 0) {
+            sendWhatsApp(waItems);
+        }
     }
 
-    function sendWhatsApp(item) {
+    function sendWhatsApp(items) {
         // notification Visual & Sound
         const audio = document.getElementById('alertSound');
         if(audio) audio.play().catch(e => console.log("Sound blocked"));
         
         if ("Notification" in window && Notification.permission === "granted") {
             new Notification("🤖 BOT WHATSAPP AKTIF", {
-                body: `Mengirim WA untuk: ${item.nama_garapan}`,
+                body: `Mengirim WA untuk ${items.length} garapan`,
                 icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/512px-WhatsApp.svg.png"
             });
         }
 
-        const text = `🔔 *PENGINGAT GARAPAN* (10 Menit Lagi)\n\n📌 *Projek:* ${item.nama_garapan}\n⏰ *Jam:* ${item.jam} WIB\n💰 *Promo:* Rp ${item.cashback || '0'}\n📝 *Ket:* ${item.keterangan || '-'}`;
-        
-        // Panggil endpoint PHP untuk mengirim via Fonnte tanpa batasan CORS di browser
-        fetch('api/send_wa.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ message: text })
-        })
-        .then(res => res.json())
-        .then(data => {
-            console.log("WA Notification sent:", data);
-        })
-        .catch(err => {
-            console.error("WA Notification fail:", err);
+        let text = `🔔 *PENGINGAT GARAPAN* (10 Menit Lagi)\n`;
+        text += `Total: ${items.length} garapan\n\n`;
+
+        items.forEach((item, idx) => {
+            text += `${idx + 1}. *${item.nama_garapan}*\n`;
+            text += `   ⏰ Jam: ${item.jam} WIB\n`;
+            text += `   💰 CB: Rp ${item.cashback || '0'}\n`;
+            text += `   📝 ${item.keterangan || '-'}\n\n`;
         });
+        
+        // ENABLED for monitoring
+        if (true) { // Removed hostname restriction
+            fetch('api/send_wa.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: text })
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log("WA Notification sent:", data);
+            })
+            .catch(err => {
+                console.error("WA Notification fail:", err);
+            });
+        }
     }
 
-    function sendTelegram(item) {
+    function sendTelegram(items) {
         // 1. Notification Visual & Sound for local monitoring
         const audio = document.getElementById('alertSound');
         if(audio) audio.play().catch(e => console.log("Sound blocked"));
         
         if ("Notification" in window && Notification.permission === "granted") {
             new Notification("🤖 BOT TELEGRAM AKTIF", {
-                body: `Mengirim notifikasi otomatis untuk: ${item.nama_garapan}`,
+                body: `Mengirim notifikasi otomatis untuk ${items.length} garapan`,
                 icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/512px-Telegram_logo.svg.png"
             });
         }
 
-        // 2. Send to Telegram API (Support Multiple IDs)
-        const text = `🔔 *PENGINGAT GARAPAN* (10 Menit Lagi)\n\n📌 *Projek:* ${item.nama_garapan}\n⏰ *Jam:* ${item.jam} WIB\n💰 *Promo:* Rp ${item.cashback || '0'}\n📝 *Ket:* ${item.keterangan || '-'}`;
-        
-        // Split IDs by comma and trim whitespace
-        const chatIds = botConfig.teleChatId.split(',').map(id => id.trim()).filter(id => id);
+        let text = `🔔 *PENGINGAT GARAPAN* (10 Menit Lagi)\n`;
+        text += `Total: ${items.length} garapan\n\n`;
 
-        chatIds.forEach(chatId => {
-            const url = `https://api.telegram.org/bot${botConfig.teleToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
-
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    if(data.ok) console.log(`Telegram Sent to ${chatId}`);
-                    else console.error(`Telegram Error (${chatId}):`, data);
-                })
-                .catch(err => console.error(`Tele Fetch Error (${chatId}):`, err));
+        items.forEach((item, idx) => {
+            text += `${idx + 1}. *${item.nama_garapan}*\n`;
+            text += `   ⏰ Jam: ${item.jam} WIB\n`;
+            text += `   💰 CB: Rp ${item.cashback || '0'}\n`;
+            text += `   📝 ${item.keterangan || '-'}\n\n`;
         });
+        
+        // ENABLED for monitoring
+        if (true) { // Removed hostname restriction
+            const chatIds = botConfig.teleChatId.split(',').map(id => id.trim()).filter(id => id);
+
+            chatIds.forEach(chatId => {
+                const url = `https://api.telegram.org/bot${botConfig.teleToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
+
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.ok) console.log(`Telegram Sent to ${chatId}`);
+                        else console.error(`Telegram Error (${chatId}):`, data);
+                    })
+                    .catch(err => console.error(`Tele Fetch Error (${chatId}):`, err));
+            });
+        }
     }
 
     // Modal Handling
@@ -798,6 +839,50 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     setInterval(checkReminders, 45000); // Check every 45s
+
+    window.loadBotLogs = function() {
+        const logContent = document.getElementById('botLogContent');
+        if (!logContent) return;
+
+        fetch('api/get_bot_log.php?t=' + new Date().getTime())
+            .then(res => res.json())
+            .then(data => {
+                let html = '';
+                for (const [date, logs] of Object.entries(data)) {
+                    html += `<div class="fw-bold text-white mb-1 border-bottom border-light-10 pb-1 mt-2">${date}</div>`;
+                    if (logs.length === 0) {
+                        html += `<div class="text-muted">- Kosong -</div>`;
+                    } else {
+                        const reversedLogs = [...logs].reverse();
+                        reversedLogs.forEach(log => {
+                            const time = log.timestamp ? log.timestamp.split(' ')[1] : '-';
+                            let statusClass = 'text-info';
+                            if (log.status === 'executed' || log.status === 'sent_in_batch') statusClass = 'text-success';
+                            if (log.error || (log.response && log.response.status === false)) statusClass = 'text-danger';
+
+                            let msg = `[${time}] ${log.bot || 'sys'}: ${log.status || ''}`;
+                            if (log.recipient) msg += ` -> ${log.recipient}`;
+                            if (log.id && log.id.startsWith('sent_')) msg += ` (${log.id})`;
+
+                            if (log.response && log.response.status === false) {
+                                msg += ` <span class="text-danger">Fail: ${JSON.stringify(log.response.detail || log.response)}</span>`;
+                            } else if (log.response && log.response.detail) {
+                                msg += ` <span class="text-success">(${log.response.detail})</span>`;
+                            }
+
+                            html += `<div class="${statusClass} mb-1" style="white-space: pre-wrap; word-break: break-all;">${msg}</div>`;
+                        });
+                    }
+                }
+                logContent.innerHTML = html || '<div class="text-center text-muted">Belum ada log.</div>';
+            })
+            .catch(err => {
+                logContent.innerHTML = '<div class="text-danger">Gagal memuat log.</div>';
+            });
+    }
+
+    loadBotLogs();
+    setInterval(loadBotLogs, 30000);
 });
 </script>
 
